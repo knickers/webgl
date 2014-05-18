@@ -1,20 +1,17 @@
 function Camera(eye, at, up, simpleTransform) {
 	this.simple = simpleTransform;
-	this.matrix = mat4.create();
-	this.eye = vec3.create(eye); // Interpret as Point
-	this.at = vec3.create(at); // Interpret as Point
-	this.up = vec3.create(up);
 	
 	if (this.simple) {
-		this.upAngle = 0;
-		this.panAngle = 0;
+		this.distance = 40;
+		this.upAngle = degToRad(-65);
+		this.panAngle = degToRad(-45);
 		this.panAmount = Math.PI / 16;
 	} else {
+		this.matrix = mat4.create();
+		this.eye = vec3.create(eye); // Interpret as Point
+		this.at = vec3.create(at); // Interpret as Point
+		this.up = vec3.create(up);
 	}
-	mat4.identity(this.matrix);
-	mat4.translate(this.matrix, [0, 0, -40]);
-	mat4.rotate(this.matrix, degToRad(-65), [1, 0, 0]);
-	mat4.rotate(this.matrix, degToRad(-45), [0, 0, 1]);
 };
 
 Camera.prototype.move = function() {
@@ -29,10 +26,13 @@ Camera.prototype.spherePoint = function() {
 };
 */
 
-Camera.prototype.transform = function() {
+Camera.prototype.transform = function(matrix) {
 	if (this.simple) {
+		mat4.translate(matrix, [0, 0, -this.distance]);
+			mat4.rotate(matrix, this.upAngle, [1, 0, 0]);
+				mat4.rotate(matrix, this.panAngle, [0, 0, 1]);
 	} else {
-		mat4.multiply(mvMatrix, this.matrix, this.matrix);
+		mat4.multiply(matrix, this.matrix, this.matrix);
 	}
 };
 
@@ -57,13 +57,13 @@ Camera.prototype.keyboard = function(keys) {
 			this.upAngle -= this.panAmount;
 		}
 	}
-	console.log('camera key handler', keys, this.panAngle);
 };
 
 Camera.prototype.mouse = function(delta) {
 	if (delta) {
-		console.log('camera mouse handler', delta);
 		if (this.simple) {
+			this.upAngle += delta.y / this.distance;
+			this.panAngle += delta.x / this.distance;
 		} else {
 			var rotationMatrix = mat4.create();
 			mat4.identity(rotationMatrix);

@@ -29,7 +29,6 @@ Keyboard.prototype.keyUp = function(event) {
 };
 
 Keyboard.prototype.update = function() {
-	console.log('updating keys');
 	for (var i=0; i<this.handlers.length; i++) {
 		this.handlers[i](this.pressed);
 	}
