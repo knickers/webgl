@@ -267,9 +267,9 @@ function webGLStart() {
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	gl.enable(gl.DEPTH_TEST);
 	
-	keyboard.addDownHandler(function(k) { camera.keyboard(k); });
-	mouse.addMoveHandler(function(m) { camera.mouse(m); });
-	mouse.addWheelHandler(function(w) { camera.mouse(w); });
+	keyboard.addDownHandler(function(keys) { camera.keyboard(keys); });
+	mouse.addMoveHandler(function(delta) { camera.mouse(delta); });
+	mouse.addWheelHandler(function(delta) { camera.mouse(delta); });
 	
 	animationHandlers.push(function(elapsed) {
 		//earthAngle += 35/1000 * elapsed;
