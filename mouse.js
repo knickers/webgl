@@ -50,6 +50,16 @@ Mouse.prototype.move = function(event) {
 	requestAnimFrame(this.animate);
 };
 
+Mouse.prototype.wheel = function(event) {
+	var delta = event.wheelDelta || -event.detail; // firefox is weird
+	
+	for (var i=0; i<this.wheelHandlers.length; i++) {
+		this.wheelHandlers[i](delta);
+	}
+	
+	requestAnimFrame(this.animate);
+};
+
 Mouse.prototype.addDownHandler = function(handler) {
 	if (handler) {
 		this.downHandlers.push(handler);
@@ -65,6 +75,12 @@ Mouse.prototype.addUpHandler = function(handler) {
 Mouse.prototype.addMoveHandler = function(handler) {
 	if (handler) {
 		this.moveHandlers.push(handler);
+	}
+};
+
+Mouse.prototype.addWheelHandler = function(handler) {
+	if (handler) {
+		this.wheelHandlers.push(handler);
 	}
 };
 
