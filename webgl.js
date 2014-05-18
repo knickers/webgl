@@ -272,9 +272,10 @@ function webGLStart() {
 	document.onkeyup = function(e) { keyboard.keyUp(e); };
 	canvas.onmousedown = function(e) { mouse.buttonDown(e); };
 	document.onmouseup = function(e) { mouse.buttonUp(e); };
-	document.onmousemove = function(e) { camera.mouse(mouse.move(e)); };
+	document.onmousemove = function(e) { mouse.move(e); };
 	
 	keyboard.addDownHandler(function(k) { camera.keyboard(k); });
+	mouse.addMoveHandler(function(m) { camera.mouse(m); });
 	
 	tick();
 	setTimeout(tick, 250);
