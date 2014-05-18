@@ -1,9 +1,17 @@
-function Keyboard(animate) {
-	this.pressed = {};
+function Keyboard(canvas, animate) {
 	this.animate = animate;
+	this.pressed = {};
 	this.downHandlers = [];
 	this.upHandlers = [];
 	this.handlers = [];
+	
+	var self = this;
+	/* Not working :-(
+	canvas.addEventListener('keydown', function(e) { self.keyDown(e); }, true);
+	canvas.addEventListener('keyup', function(e) { self.keyUp(e); }, true);
+	*/
+	document.onkeydown = function(e) { self.keyDown(e); };
+	document.onkeyup = function(e) { self.keyUp(e); };
 }
 
 Keyboard.prototype.keyDown = function(event) {

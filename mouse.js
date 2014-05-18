@@ -1,4 +1,4 @@
-function Mouse(animate) {
+function Mouse(canvas, animate) {
 	this.animate = animate;
 	this.x = null;
 	this.y = null;
@@ -6,6 +6,14 @@ function Mouse(animate) {
 	this.downHandlers = [];
 	this.upHandlers = [];
 	this.moveHandlers = [];
+	this.wheelHandlers = [];
+	
+	var self = this;
+	canvas.onmousedown = function(e) { self.buttonDown(e); };
+	document.onmouseup = function(e) { self.buttonUp(e); };
+	document.onmousemove = function(e) { self.move(e); };
+	canvas.onmousewheel = function(e) { self.wheel(e); };
+	canvas.DOMMouseScroll = function(e) { self.wheel(e); }; // Poor Firefox
 }
 
 Mouse.prototype.buttonDown = function(event) {

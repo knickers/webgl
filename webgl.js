@@ -256,9 +256,9 @@ function webGLStart() {
 	earthTexture = createTexture('earth.jpg');
 	galvanizedTexture = createTexture('arroway.de_metal+structure+06_d100_flat.jpg');
 	
-	keyboard = new Keyboard(tick);
+	keyboard = new Keyboard(canvas, tick);
 	camera = new Camera([30,-30,30], [0,0,0], [0,0,1], true);
-	mouse = new Mouse(tick);
+	mouse = new Mouse(canvas, tick);
 	//teapot = new Teapot(180);
 	ellipse = new Ellipse(7, 4, 10, [0,0,0]);
 	sphere = new Sphere(5, 36, 36);
@@ -266,12 +266,6 @@ function webGLStart() {
 	
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	gl.enable(gl.DEPTH_TEST);
-	
-	document.onkeydown = function(e) { keyboard.keyDown(e); };
-	document.onkeyup = function(e) { keyboard.keyUp(e); };
-	canvas.onmousedown = function(e) { mouse.buttonDown(e); };
-	document.onmouseup = function(e) { mouse.buttonUp(e); };
-	document.onmousemove = function(e) { mouse.move(e); };
 	
 	keyboard.addDownHandler(function(k) { camera.keyboard(k); });
 	mouse.addMoveHandler(function(m) { camera.mouse(m); });
