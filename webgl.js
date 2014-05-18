@@ -275,6 +275,7 @@ function webGLStart() {
 	
 	keyboard.addDownHandler(function(k) { camera.keyboard(k); });
 	mouse.addMoveHandler(function(m) { camera.mouse(m); });
+	mouse.addWheelHandler(function(w) { camera.mouse(w); });
 	
 	animationHandlers.push(function(elapsed) {
 		//earthAngle += 35/1000 * elapsed;

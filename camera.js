@@ -42,14 +42,14 @@ Camera.prototype.keyboard = function(keys) {
 			this.panAngle -= this.panAmount;
 		}
 	}
-	if (keys[39]) { // Right cursor key
-		if (this.simple) {
-			this.panAngle += this.panAmount;
-		}
-	}
 	if (keys[38]) { // Up cursor key
 		if (this.simple) {
 			this.upAngle += this.panAmount;
+		}
+	}
+	if (keys[39]) { // Right cursor key
+		if (this.simple) {
+			this.panAngle += this.panAmount;
 		}
 	}
 	if (keys[40]) { // Down cursor key
@@ -60,10 +60,14 @@ Camera.prototype.keyboard = function(keys) {
 };
 
 Camera.prototype.mouse = function(delta) {
-	if (delta) {
+	if (typeof delta === 'number') {
 		if (this.simple) {
-			this.upAngle += delta.y / this.distance;
-			this.panAngle += delta.x / this.distance;
+			this.distance -= delta / 100;
+		}
+	} else {
+		if (this.simple) {
+			this.upAngle += delta.y * this.distance / 1000;
+			this.panAngle += delta.x * this.distance / 1000;
 		} else {
 			var rotationMatrix = mat4.create();
 			mat4.identity(rotationMatrix);
