@@ -9,17 +9,17 @@ function Camera(eye, at, up, simpleTransform) {
 		this.upAngle = 0;
 		this.panAngle = 0;
 		this.panAmount = Math.PI / 16;
-		console.log(this.panAngle);
 	} else {
 	}
-		console.log(this.panAngle);
 	mat4.identity(this.matrix);
 	mat4.translate(this.matrix, [0, 0, -40]);
 	mat4.rotate(this.matrix, degToRad(-65), [1, 0, 0]);
 	mat4.rotate(this.matrix, degToRad(-45), [0, 0, 1]);
 };
+
 Camera.prototype.move = function() {
 };
+
 /*
 Camera.prototype.spherePoint = function() {
 	double temp  = radius*cos(upAngle);
@@ -28,12 +28,14 @@ Camera.prototype.spherePoint = function() {
 	point_out[2] = radius*sin(upAngle);
 };
 */
+
 Camera.prototype.transform = function() {
 	if (this.simple) {
 	} else {
 		mat4.multiply(mvMatrix, this.matrix, this.matrix);
 	}
 };
+
 Camera.prototype.keyboard = function(keys) {
 	if (keys[37]) { // Left cursor key
 		if (this.simple) {
@@ -57,8 +59,10 @@ Camera.prototype.keyboard = function(keys) {
 	}
 	console.log('camera key handler', keys, this.panAngle);
 };
+
 Camera.prototype.mouse = function(delta) {
 	if (delta) {
+		console.log('camera mouse handler', delta);
 		if (this.simple) {
 		} else {
 			var rotationMatrix = mat4.create();
