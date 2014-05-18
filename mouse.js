@@ -1,4 +1,5 @@
-function Mouse() {
+function Mouse(animate) {
+	this.animate = animate;
 	this.x = null;
 	this.y = null;
 	this.down = false;
@@ -15,6 +16,8 @@ Mouse.prototype.buttonDown = function(event) {
 	for (var i=0; i<this.downHandlers.length; i++) {
 		this.downHandlers[i]({x: this.x, y: this.y});
 	}
+	
+	requestAnimFrame(this.animate);
 };
 
 Mouse.prototype.buttonUp = function(event) {
@@ -23,6 +26,8 @@ Mouse.prototype.buttonUp = function(event) {
 	for (var i=0; i<this.upHandlers.length; i++) {
 		this.upHandlers[i]();
 	}
+	
+	requestAnimFrame(this.animate);
 };
 
 Mouse.prototype.move = function(event) {
@@ -41,6 +46,8 @@ Mouse.prototype.move = function(event) {
 	for (var i=0; i<this.moveHandlers.length; i++) {
 		this.moveHandlers[i](delta);
 	}
+	
+	requestAnimFrame(this.animate);
 };
 
 Mouse.prototype.addDownHandler = function(handler) {

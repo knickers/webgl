@@ -193,10 +193,10 @@ function drawScene() {
 	
 	mat4.identity(mvMatrix);
 	
-	//camera.transform();
-	mat4.translate(mvMatrix, [0, 0, -40]);
-	mat4.rotate(mvMatrix, degToRad(-65), [1, 0, 0]);
-	mat4.rotate(mvMatrix, degToRad(-45), [0, 0, 1]);
+	camera.transform(mvMatrix);
+	//mat4.translate(mvMatrix, [0, 0, -40]);
+	//mat4.rotate(mvMatrix, degToRad(-65), [1, 0, 0]);
+	//mat4.rotate(mvMatrix, degToRad(-45), [0, 0, 1]);
 	
 	//teapot.draw();
 	axis.draw();
@@ -259,7 +259,7 @@ function webGLStart() {
 	
 	keyboard = new Keyboard(tick);
 	camera = new Camera([30,-30,30], [0,0,0], [0,0,1], true);
-	mouse = new Mouse();
+	mouse = new Mouse(tick);
 	//teapot = new Teapot(180);
 	ellipse = new Ellipse(7, 4, 10, [0,0,0]);
 	sphere = new Sphere(5, 36, 36);
