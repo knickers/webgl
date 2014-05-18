@@ -192,11 +192,7 @@ function drawScene() {
 	gl.uniform1f(shaderProgram.materialShininessUniform, 0.0);
 	
 	mat4.identity(mvMatrix);
-	
 	camera.transform(mvMatrix);
-	//mat4.translate(mvMatrix, [0, 0, -40]);
-	//mat4.rotate(mvMatrix, degToRad(-65), [1, 0, 0]);
-	//mat4.rotate(mvMatrix, degToRad(-45), [0, 0, 1]);
 	
 	//teapot.draw();
 	axis.draw();
@@ -217,14 +213,17 @@ function drawScene() {
 	//ellipse.draw();
 }
 
+var animationHandlers = [];
 var earthAngle = 0;
 var lastTime = 0;
 function animate() {
 	var timeNow = new Date().getTime();
 	if (lastTime != 0) {
 		var elapsed = timeNow - lastTime;
-		//teapot.animate(elapsed);
-		earthAngle += 35/1000 * elapsed;
+		
+		for (var i=0; i<animationHandlers.length; i++) {
+			animationHandlers[i](elapsed);
+		}
 	}
 	lastTime = timeNow;
 }
@@ -276,6 +275,11 @@ function webGLStart() {
 	
 	keyboard.addDownHandler(function(k) { camera.keyboard(k); });
 	mouse.addMoveHandler(function(m) { camera.mouse(m); });
+	
+	animationHandlers.push(function(elapsed) {
+		//earthAngle += 35/1000 * elapsed;
+		//teapot.animate(elapsed);
+	});
 	
 	tick();
 	setTimeout(tick, 250);

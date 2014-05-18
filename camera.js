@@ -3,8 +3,8 @@ function Camera(eye, at, up, simpleTransform) {
 	
 	if (this.simple) {
 		this.distance = 40;
-		this.upAngle = degToRad(-65);
-		this.panAngle = degToRad(-45);
+		this.upAngle = -Math.PI / 3;
+		this.panAngle = -Math.PI / 4;
 		this.panAmount = Math.PI / 16;
 	} else {
 		this.matrix = mat4.create();
