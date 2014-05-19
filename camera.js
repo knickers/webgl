@@ -57,6 +57,16 @@ Camera.prototype.keyboard = function(keys) {
 			this.upAngle -= this.panAmount;
 		}
 	}
+	if (keys[189]) { // -
+		if (this.simple) {
+			this.distance += this.panAmount * 10;
+		}
+	}
+	if (keys[187]) { // = (use for +)
+		if (this.simple) {
+			this.distance -= this.panAmount * 10;
+		}
+	}
 };
 
 Camera.prototype.mouse = function(delta) {
