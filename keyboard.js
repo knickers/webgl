@@ -40,12 +40,6 @@ Keyboard.prototype.update = function() {
 	for (var i=0; i<this.handlers.length; i++) {
 		this.handlers[i](this.pressed);
 	}
-	if (this.pressed[189]) { // -
-		//z += 0.05;
-	}
-	if (this.pressed[187]) { // = (use for +)
-		//z -= 0.05;
-	}
 	
 	return this.pressed.length > 0;
 };
