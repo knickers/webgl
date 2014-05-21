@@ -155,37 +155,8 @@ function drawScene() {
 	var specularHighlights = document.getElementById('specular').checked;
 	gl.uniform1i(shaderProgram.showSpecularHighlightsUniform, specularHighlights);
 	
-	var lighting = document.getElementById('lighting').checked;
-	gl.uniform1i(shaderProgram.useLightingUniform, lighting);
-	if (lighting) {
-		gl.uniform3f(
-			shaderProgram.ambientColorUniform,
-			parseFloat(document.getElementById('ambientR').value),
-			parseFloat(document.getElementById('ambientG').value),
-			parseFloat(document.getElementById('ambientB').value)
-		);
-		
-		gl.uniform3f(
-			shaderProgram.pointLightingLocationUniform,
-			parseFloat(document.getElementById('positionX').value),
-			parseFloat(document.getElementById('positionY').value),
-			parseFloat(document.getElementById('positionZ').value)
-		);
-		
-		gl.uniform3f(
-			shaderProgram.pointLightingSpecularColorUniform,
-			parseFloat(document.getElementById('specularR').value),
-			parseFloat(document.getElementById('specularG').value),
-			parseFloat(document.getElementById('specularB').value)
-		);
-		
-		gl.uniform3f(
-			shaderProgram.pointLightingDiffuseColorUniform,
-			parseFloat(document.getElementById('diffuseR').value),
-			parseFloat(document.getElementById('diffuseG').value),
-			parseFloat(document.getElementById('diffuseB').value)
-		);
-	}
+	gl.uniform1i(shaderProgram.useLightingUniform, lighting.enabled);
+	lighting.draw();
 	
 	gl.uniform1i(shaderProgram.useTexturesUniform, false);
 	gl.uniform1i(shaderProgram.samplerUniform, 0);
@@ -242,6 +213,7 @@ var earthTexture;
 var galvanizedTexture;
 
 var keyboard;
+var lighting;
 var camera;
 var mouse;
 var teapot;
@@ -257,6 +229,7 @@ function webGLStart() {
 	galvanizedTexture = createTexture('arroway.de_metal+structure+06_d100_flat.jpg');
 	
 	keyboard = new Keyboard(canvas, tick);
+	lighting = new Lighting();
 	camera = new Camera([30,-30,30], [0,0,0], [0,0,1], true);
 	mouse = new Mouse(canvas, tick);
 	//teapot = new Teapot(180);
