@@ -211,10 +211,6 @@ var keyboard;
 var lighting;
 var camera;
 var mouse;
-var teapot;
-var sphere;
-var ellipse;
-var axis;
 function webGLStart() {
 	var canvas = document.getElementById('canvas');
 	initGL(canvas);
@@ -227,10 +223,10 @@ function webGLStart() {
 	lighting = new Lighting();
 	camera = new Camera([30,-30,30], [0,0,0], [0,0,1], true);
 	mouse = new Mouse(canvas, tick);
-	//teapot = new Teapot(180);
-	ellipse = new Ellipse(7, 4, 10, [0,0,0]);
-	sphere = new Sphere(5, 36, 36);
-	axis = new Axis(10);
+	//var ellipse = new Ellipse(7, 4, 10, [0,0,0]);
+	//var teapot = new Teapot(180);
+	var sphere = new Sphere(5, 36, 36);
+	var axis = new Axis(10);
 	
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	gl.enable(gl.DEPTH_TEST);
