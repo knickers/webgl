@@ -146,6 +146,17 @@ function degToRad(degrees) {
 	return degrees * Math.PI / 180;
 }
 
+function useTextures(ok) {
+	gl.uniform1i(shaderProgram.useTexturesUniform, ok);
+}
+function samplerUniform(num) {
+	gl.uniform1i(shaderProgram.samplerUniform, num);
+}
+function materialShininess(num) {
+	gl.uniform1f(shaderProgram.materialShininessUniform, num);
+}
+
+var drawHandlers = [];
 function drawScene() {
 	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -157,30 +168,15 @@ function drawScene() {
 	gl.uniform1i(shaderProgram.useLightingUniform, lighting.enabled);
 	lighting.draw();
 	
-	gl.uniform1i(shaderProgram.useTexturesUniform, false);
-	gl.uniform1i(shaderProgram.samplerUniform, 0);
-	gl.uniform1f(shaderProgram.materialShininessUniform, 0.0);
-	
 	mat4.identity(mvMatrix);
 	camera.transform(mvMatrix);
 	
-	//teapot.draw();
-	axis.draw();
+	samplerUniform(0);
 	
-	gl.uniform1f(shaderProgram.materialShininessUniform, parseFloat(document.getElementById('shininess').value));
-	var texture = document.getElementById('texture').value;
-	gl.uniform1i(shaderProgram.useTexturesUniform, texture != 'none');
-	gl.activeTexture(gl.TEXTURE0);
-	if (texture == 'earth') {
-		gl.bindTexture(gl.TEXTURE_2D, earthTexture);
-	} else if (texture == 'galvanized') {
-		gl.bindTexture(gl.TEXTURE_2D, galvanizedTexture);
+	for (var i=0; i<drawHandlers.length; i++) {
+		drawHandlers[i]();
 	}
 	
-	mat4.rotate(mvMatrix, degToRad(earthAngle), [0, 0, 1]);
-		sphere.draw();
-	mat4.rotate(mvMatrix, degToRad(-earthAngle), [0, 0, 1]);
-	//ellipse.draw();
 }
 
 var animationHandlers = [];
@@ -246,6 +242,30 @@ function webGLStart() {
 	animationHandlers.push(function(elapsed) {
 		//earthAngle += 35/1000 * elapsed;
 		//teapot.animate(elapsed);
+	});
+	
+	drawHandlers.push(function() {
+		useTextures(false);
+		materialShininess(0.0);
+		//ellipse.draw();
+		//teapot.draw();
+		axis.draw();
+	});
+	
+	drawHandlers.push(function() {
+		materialShininess(parseFloat(document.getElementById('shininess').value));
+		var texture = document.getElementById('texture').value;
+		useTextures(texture != 'none');
+		gl.activeTexture(gl.TEXTURE0);
+		if (texture == 'earth') {
+			gl.bindTexture(gl.TEXTURE_2D, earthTexture);
+		} else if (texture == 'galvanized') {
+			gl.bindTexture(gl.TEXTURE_2D, galvanizedTexture);
+		}
+		
+		mat4.rotate(mvMatrix, degToRad(earthAngle), [0, 0, 1]);
+			sphere.draw();
+		mat4.rotate(mvMatrix, degToRad(-earthAngle), [0, 0, 1]);
 	});
 	
 	tick();
