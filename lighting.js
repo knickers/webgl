@@ -1,5 +1,6 @@
 function Lighting() {
 	this.enabled = true;
+	this.specularHighlights = true;
 	this.point = {
 		position: {
 			x: -10,

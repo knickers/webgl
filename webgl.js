@@ -152,8 +152,7 @@ function drawScene() {
 	
 	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
 	
-	var specularHighlights = document.getElementById('specular').checked;
-	gl.uniform1i(shaderProgram.showSpecularHighlightsUniform, specularHighlights);
+	gl.uniform1i(shaderProgram.showSpecularHighlightsUniform, lighting.specularHighlights);
 	
 	gl.uniform1i(shaderProgram.useLightingUniform, lighting.enabled);
 	lighting.draw();
