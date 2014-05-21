@@ -212,7 +212,13 @@ var lighting;
 var camera;
 var mouse;
 function webGLStart() {
+	var html = document.documentElement;
+	var body = document.body;
 	var canvas = document.getElementById('canvas');
+	
+	canvas.width = Math.max(body.clientWidth, body.offsetWidth, html.clientWidth, html.offsetWidth);
+	canvas.height = Math.max(body.clientHeight, body.offsetHeight, html.clientHeight, html.offsetHeight);
+	
 	initGL(canvas);
 	initShaders();
 	
@@ -249,7 +255,7 @@ function webGLStart() {
 	});
 	
 	drawHandlers.push(function() {
-		materialShininess(parseFloat(document.getElementById('shininess').value));
+		materialShininess(32.0);
 		var texture = document.getElementById('texture').value;
 		useTextures(texture != 'none');
 		gl.activeTexture(gl.TEXTURE0);

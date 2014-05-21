@@ -88,71 +88,33 @@ void main(void) {
 <script type="text/javascript" src="teapot.js"></script>
 <script type="text/javascript" src="shapes.js"></script>
 <style type="text/css">
-	body { margin: 0; }
-	th { padding: 20px 0 10px; font-size: 24px; font-weight: bold; }
-	td { padding: 0; }
-	#canvas { float: left; }
+	html, body { height: 100%; margin: 0; padding: 0; }
+	.texture {
+		top: 10px;
+		right: 10px;
+		color: white;
+		position: absolute;
+		text-align: center;
+	}
 </style>
 </head>
 <body onload="webGLStart();">
 	<canvas id="canvas" width="500" height="500"></canvas>
-	<table style="border: 0; padding: 10px;">
-		<tr>
-			<td colspan="4"2>
-				<input type="checkbox" id="lighting" checked />
-				Use lighting &emsp;
-				<input type="checkbox" id="specular" checked />
-				Show specular highlight &emsp;
-				Texture:
-				<select id="texture">
-					<option value="none">None</option>
-					<option value="galvanized">Galvanized</option>
-					<option selected value="earth">Earth</option>
-				</select>
-			</td>
-		</tr>
-		<tr><th colspan="4"2>Material</th></tr>
-		<tr>
-			<td><b>Shininess:</b>
-			<td>A: <input type="text" id="shininess" value="32.0" />
-			<td>
-			<td>
-		</tr>
-		<tr><th colspan="4">Point light</th></tr>
-		<tr>
-			<td><b>Location:</b>
-			<td>X: <input type="text" id="positionX" value="-10.0"/>
-			<td>Y: <input type="text" id="positionY" value="4.0" />
-			<td>Z: <input type="text" id="positionZ" value="-20.0"/>
-		</tr>
-		<tr>
-			<td><b>Specular colour:</b>
-			<td>R: <input type="text" id="specularR" value="0.8" />
-			<td>G: <input type="text" id="specularG" value="0.8" />
-			<td>B: <input type="text" id="specularB" value="0.8" />
-		</tr>
-		<tr>
-			<td><b>Diffuse colour:</b>
-			<td>R: <input type="text" id="diffuseR" value="0.8" />
-			<td>G: <input type="text" id="diffuseG" value="0.8" />
-			<td>B: <input type="text" id="diffuseB" value="0.8" />
-		</tr>
-		<tr><th colspan="4">Ambient light</th></tr>
-		<tr>
-			<td><b>Colour:</b>
-			<td>R: <input type="text" id="ambientR" value="0.2" />
-			<td>G: <input type="text" id="ambientG" value="0.2" />
-			<td>B: <input type="text" id="ambientB" value="0.2" />
-		</tr>
-		<tr>
-			<td colspan="4">
-				<br/>
-				Galvanized texture courtesy of <a href="http://www.arroway-textures.com/">Arroway Textures</a>.<br/>
-				Earth texture courtesy of <a href="http://www.esa.int/esaEO/SEMGSY2IU7E_index_0.html">the European Space Agency/Envisat</a>.<br/><br/>
-			</td>
-		</tr>
-	</table>
+	<div class="texture">
+		<div>Texture:</div>
+		<select id="texture">
+			<option value="none">None</option>
+			<option value="galvanized">Galvanized</option>
+			<option selected value="earth">Earth</option>
+		</select>
+	</div>
+	<!--
+	<div>
+		Galvanized texture courtesy of <a href="http://www.arroway-textures.com/">Arroway Textures</a>.<br/>
+	</div>
+	<div>
+		Earth texture courtesy of <a href="http://www.esa.int/esaEO/SEMGSY2IU7E_index_0.html">the European Space Agency/Envisat</a>.<br/><br/>
+	</div>
+	-->
 </body>
-<script>
-</script>
 </html>
