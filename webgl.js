@@ -204,9 +204,6 @@ function tick() {
 	drawScene();
 }
 
-var earthTexture;
-var galvanizedTexture;
-
 var keyboard;
 var lighting;
 var camera;
@@ -222,8 +219,8 @@ function webGLStart() {
 	initGL(canvas);
 	initShaders();
 	
-	earthTexture = createTexture('earth.jpg');
-	galvanizedTexture = createTexture('arroway.de_metal+structure+06_d100_flat.jpg');
+	var earthTexture = createTexture('earth.jpg');
+	var galvanizedTexture = createTexture('arroway.de_metal+structure+06_d100_flat.jpg');
 	
 	keyboard = new Keyboard(canvas, tick);
 	lighting = new Lighting();
