@@ -1,28 +1,28 @@
 function draw(GL_SHAPE, obj) {
 	gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexBuffer);
 	gl.vertexAttribPointer(
-		shaderProgram.vertexPositionAttribute,
+		shader.program.vertexPositionAttribute,
 		obj.vertexBuffer.itemSize,
 		gl.FLOAT, false, 0, 0
 	);
 	
 	gl.bindBuffer(gl.ARRAY_BUFFER, obj.normalBuffer);
 	gl.vertexAttribPointer(
-		shaderProgram.vertexNormalAttribute,
+		shader.program.vertexNormalAttribute,
 		obj.normalBuffer.itemSize,
 		gl.FLOAT, false, 0, 0
 	);
 	
 	gl.bindBuffer(gl.ARRAY_BUFFER, obj.textureBuffer);
 	gl.vertexAttribPointer(
-		shaderProgram.textureCoordAttribute,
+		shader.program.textureCoordAttribute,
 		obj.textureBuffer.itemSize,
 		gl.FLOAT, false, 0, 0
 	);
 	
 	gl.bindBuffer(gl.ARRAY_BUFFER, obj.colorBuffer);
 	gl.vertexAttribPointer(
-		shaderProgram.vertexColorAttribute,
+		shader.program.vertexColorAttribute,
 		obj.colorBuffer.itemSize,
 		gl.FLOAT, false, 0, 0
 	);

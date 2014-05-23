@@ -11,82 +11,7 @@ function initGL(canvas) {
 	}
 }
 
-function getShader(gl, id) {
-	var shaderScript = document.getElementById(id);
-	if (!shaderScript) {
-		return null;
-	}
-	
-	var str = '';
-	var k = shaderScript.firstChild;
-	while (k) {
-		if (k.nodeType == 3) {
-			str += k.textContent;
-		}
-		k = k.nextSibling;
-	}
-	
-	var shader;
-	if (shaderScript.type == 'x-shader/x-fragment') {
-		shader = gl.createShader(gl.FRAGMENT_SHADER);
-	} else if (shaderScript.type == 'x-shader/x-vertex') {
-		shader = gl.createShader(gl.VERTEX_SHADER);
-	} else {
-		return null;
-	}
-	
-	gl.shaderSource(shader, str);
-	gl.compileShader(shader);
-	
-	if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-		alert(gl.getShaderInfoLog(shader));
-		return null;
-	}
-	
-	return shader;
-}
-
-var shaderProgram;
-function initShaders() {
-	var fragmentShader = getShader(gl, 'per-fragment-lighting-fs');
-	var vertexShader = getShader(gl, 'per-fragment-lighting-vs');
-	
-	shaderProgram = gl.createProgram();
-	gl.attachShader(shaderProgram, vertexShader);
-	gl.attachShader(shaderProgram, fragmentShader);
-	gl.linkProgram(shaderProgram);
-	
-	if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-		alert('Could not initialise shaders');
-	}
-	
-	gl.useProgram(shaderProgram);
-	
-	shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, 'aVertexPosition');
-	gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
-	
-	shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, 'aVertexNormal');
-	gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
-	
-	shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, 'aTextureCoord');
-	gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
-	
-	shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
-	gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
-	
-	shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, 'uPMatrix');
-	shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, 'uMVMatrix');
-	shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram, 'uNMatrix');
-	shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, 'uSampler');
-	shaderProgram.materialShininessUniform = gl.getUniformLocation(shaderProgram, 'uMaterialShininess');
-	shaderProgram.showSpecularHighlightsUniform = gl.getUniformLocation(shaderProgram, 'uShowSpecularHighlights');
-	shaderProgram.useTexturesUniform = gl.getUniformLocation(shaderProgram, 'uUseTextures');
-	shaderProgram.useLightingUniform = gl.getUniformLocation(shaderProgram, 'uUseLighting');
-	shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram, 'uAmbientColor');
-	shaderProgram.pointLightingLocationUniform = gl.getUniformLocation(shaderProgram, 'uPointLightingLocation');
-	shaderProgram.pointLightingSpecularColorUniform = gl.getUniformLocation(shaderProgram, 'uPointLightingSpecularColor');
-	shaderProgram.pointLightingDiffuseColorUniform = gl.getUniformLocation(shaderProgram, 'uPointLightingDiffuseColor');
-}
+var shader;
 
 function createTexture(imgSrc) {
 	var texture = gl.createTexture();
@@ -105,7 +30,7 @@ function createTexture(imgSrc) {
 	return texture;
 }
 
-function createBuffer(GL_BUFFER, data, itemSize, numItems) {
+function createBuffer(GL_BUFFER, data, itemSize) {
 	var buf = gl.createBuffer();
 	gl.bindBuffer(GL_BUFFER, buf);
 	gl.bufferData(GL_BUFFER, data, gl.STATIC_DRAW);
@@ -133,13 +58,13 @@ function mvPopMatrix() {
 }
 
 function setMatrixUniforms() {
-	gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
-	gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+	gl.uniformMatrix4fv(shader.program.pMatrixUniform, false, pMatrix);
+	gl.uniformMatrix4fv(shader.program.mvMatrixUniform, false, mvMatrix);
 	
 	var normalMatrix = mat3.create();
 	mat4.toInverseMat3(mvMatrix, normalMatrix);
 	mat3.transpose(normalMatrix);
-	gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
+	gl.uniformMatrix3fv(shader.program.nMatrixUniform, false, normalMatrix);
 }
 
 function degToRad(degrees) {
@@ -153,43 +78,43 @@ function drawScene() {
 	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
 	
 	var specularHighlights = document.getElementById('specular').checked;
-	gl.uniform1i(shaderProgram.showSpecularHighlightsUniform, specularHighlights);
+	gl.uniform1i(shader.program.showSpecularHighlightsUniform, specularHighlights);
 	
 	var lighting = document.getElementById('lighting').checked;
-	gl.uniform1i(shaderProgram.useLightingUniform, lighting);
+	gl.uniform1i(shader.program.useLightingUniform, lighting);
 	if (lighting) {
 		gl.uniform3f(
-			shaderProgram.ambientColorUniform,
+			shader.program.ambientColorUniform,
 			parseFloat(document.getElementById('ambientR').value),
 			parseFloat(document.getElementById('ambientG').value),
 			parseFloat(document.getElementById('ambientB').value)
 		);
 		
 		gl.uniform3f(
-			shaderProgram.pointLightingLocationUniform,
+			shader.program.pointLightingLocationUniform,
 			parseFloat(document.getElementById('positionX').value),
 			parseFloat(document.getElementById('positionY').value),
 			parseFloat(document.getElementById('positionZ').value)
 		);
 		
 		gl.uniform3f(
-			shaderProgram.pointLightingSpecularColorUniform,
+			shader.program.pointLightingSpecularColorUniform,
 			parseFloat(document.getElementById('specularR').value),
 			parseFloat(document.getElementById('specularG').value),
 			parseFloat(document.getElementById('specularB').value)
 		);
 		
 		gl.uniform3f(
-			shaderProgram.pointLightingDiffuseColorUniform,
+			shader.program.pointLightingDiffuseColorUniform,
 			parseFloat(document.getElementById('diffuseR').value),
 			parseFloat(document.getElementById('diffuseG').value),
 			parseFloat(document.getElementById('diffuseB').value)
 		);
 	}
 	
-	gl.uniform1i(shaderProgram.useTexturesUniform, false);
-	gl.uniform1i(shaderProgram.samplerUniform, 0);
-	gl.uniform1f(shaderProgram.materialShininessUniform, 0.0);
+	gl.uniform1i(shader.program.useTexturesUniform, false);
+	gl.uniform1i(shader.program.samplerUniform, 0);
+	gl.uniform1f(shader.program.materialShininessUniform, 0.0);
 	
 	mat4.identity(mvMatrix);
 	camera.transform(mvMatrix);
@@ -197,9 +122,9 @@ function drawScene() {
 	//teapot.draw();
 	axis.draw();
 	
-	gl.uniform1f(shaderProgram.materialShininessUniform, parseFloat(document.getElementById('shininess').value));
+	gl.uniform1f(shader.program.materialShininessUniform, parseFloat(document.getElementById('shininess').value));
 	var texture = document.getElementById('texture').value;
-	gl.uniform1i(shaderProgram.useTexturesUniform, texture != 'none');
+	gl.uniform1i(shader.program.useTexturesUniform, texture != 'none');
 	gl.activeTexture(gl.TEXTURE0);
 	if (texture == 'earth') {
 		gl.bindTexture(gl.TEXTURE_2D, earthTexture);
@@ -251,7 +176,7 @@ var axis;
 function webGLStart() {
 	var canvas = document.getElementById('canvas');
 	initGL(canvas);
-	initShaders();
+	shader = new Shader(gl);
 	
 	earthTexture = createTexture('earth.jpg');
 	galvanizedTexture = createTexture('arroway.de_metal+structure+06_d100_flat.jpg');
