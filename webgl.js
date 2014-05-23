@@ -71,71 +71,37 @@ function degToRad(degrees) {
 	return degrees * Math.PI / 180;
 }
 
+function useTextures(ok) {
+	gl.uniform1i(shader.program.useTexturesUniform, ok);
+}
+function samplerUniform(num) {
+	gl.uniform1i(shader.program.samplerUniform, num);
+}
+function materialShininess(num) {
+	gl.uniform1f(shader.program.materialShininessUniform, num);
+}
+
+var drawHandlers = [];
 function drawScene() {
 	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	
 	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
 	
-	var specularHighlights = document.getElementById('specular').checked;
-	gl.uniform1i(shader.program.showSpecularHighlightsUniform, specularHighlights);
+	gl.uniform1i(shader.program.showSpecularHighlightsUniform, lighting.specularHighlights);
 	
-	var lighting = document.getElementById('lighting').checked;
-	gl.uniform1i(shader.program.useLightingUniform, lighting);
-	if (lighting) {
-		gl.uniform3f(
-			shader.program.ambientColorUniform,
-			parseFloat(document.getElementById('ambientR').value),
-			parseFloat(document.getElementById('ambientG').value),
-			parseFloat(document.getElementById('ambientB').value)
-		);
-		
-		gl.uniform3f(
-			shader.program.pointLightingLocationUniform,
-			parseFloat(document.getElementById('positionX').value),
-			parseFloat(document.getElementById('positionY').value),
-			parseFloat(document.getElementById('positionZ').value)
-		);
-		
-		gl.uniform3f(
-			shader.program.pointLightingSpecularColorUniform,
-			parseFloat(document.getElementById('specularR').value),
-			parseFloat(document.getElementById('specularG').value),
-			parseFloat(document.getElementById('specularB').value)
-		);
-		
-		gl.uniform3f(
-			shader.program.pointLightingDiffuseColorUniform,
-			parseFloat(document.getElementById('diffuseR').value),
-			parseFloat(document.getElementById('diffuseG').value),
-			parseFloat(document.getElementById('diffuseB').value)
-		);
-	}
-	
-	gl.uniform1i(shader.program.useTexturesUniform, false);
-	gl.uniform1i(shader.program.samplerUniform, 0);
-	gl.uniform1f(shader.program.materialShininessUniform, 0.0);
+	gl.uniform1i(shader.program.useLightingUniform, lighting.enabled);
+	lighting.draw();
 	
 	mat4.identity(mvMatrix);
 	camera.transform(mvMatrix);
 	
-	//teapot.draw();
-	axis.draw();
+	samplerUniform(0);
 	
-	gl.uniform1f(shader.program.materialShininessUniform, parseFloat(document.getElementById('shininess').value));
-	var texture = document.getElementById('texture').value;
-	gl.uniform1i(shader.program.useTexturesUniform, texture != 'none');
-	gl.activeTexture(gl.TEXTURE0);
-	if (texture == 'earth') {
-		gl.bindTexture(gl.TEXTURE_2D, earthTexture);
-	} else if (texture == 'galvanized') {
-		gl.bindTexture(gl.TEXTURE_2D, galvanizedTexture);
+	for (var i=0; i<drawHandlers.length; i++) {
+		drawHandlers[i]();
 	}
 	
-	mat4.rotate(mvMatrix, degToRad(earthAngle), [0, 0, 1]);
-		sphere.draw();
-	mat4.rotate(mvMatrix, degToRad(-earthAngle), [0, 0, 1]);
-	//ellipse.draw();
 }
 
 var animationHandlers = [];
@@ -163,31 +129,32 @@ function tick() {
 	drawScene();
 }
 
-var earthTexture;
-var galvanizedTexture;
-
 var keyboard;
+var lighting;
 var camera;
 var mouse;
-var teapot;
-var sphere;
-var ellipse;
-var axis;
 function webGLStart() {
+	var html = document.documentElement;
+	var body = document.body;
 	var canvas = document.getElementById('canvas');
+	
+	canvas.width = Math.max(body.clientWidth, body.offsetWidth, html.clientWidth, html.offsetWidth);
+	canvas.height = Math.max(body.clientHeight, body.offsetHeight, html.clientHeight, html.offsetHeight);
+	
 	initGL(canvas);
 	shader = new Shader(gl);
 	
-	earthTexture = createTexture('earth.jpg');
-	galvanizedTexture = createTexture('arroway.de_metal+structure+06_d100_flat.jpg');
+	var earthTexture = createTexture('earth.jpg');
+	var galvanizedTexture = createTexture('arroway.de_metal+structure+06_d100_flat.jpg');
 	
 	keyboard = new Keyboard(canvas, tick);
+	lighting = new Lighting();
 	camera = new Camera([30,-30,30], [0,0,0], [0,0,1], true);
 	mouse = new Mouse(canvas, tick);
-	//teapot = new Teapot(180);
-	ellipse = new Ellipse(7, 4, 10, [0,0,0]);
-	sphere = new Sphere(5, 36, 36);
-	axis = new Axis(10);
+	//var ellipse = new Ellipse(7, 4, 10, [0,0,0]);
+	//var teapot = new Teapot(180);
+	var sphere = new Sphere(5, 36, 36);
+	var axis = new Axis(10);
 	
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	gl.enable(gl.DEPTH_TEST);
@@ -199,6 +166,30 @@ function webGLStart() {
 	animationHandlers.push(function(elapsed) {
 		//earthAngle += 35/1000 * elapsed;
 		//teapot.animate(elapsed);
+	});
+	
+	drawHandlers.push(function() {
+		useTextures(false);
+		materialShininess(0.0);
+		//ellipse.draw();
+		//teapot.draw();
+		axis.draw();
+	});
+	
+	drawHandlers.push(function() {
+		materialShininess(32.0);
+		var texture = document.getElementById('texture').value;
+		useTextures(texture != 'none');
+		gl.activeTexture(gl.TEXTURE0);
+		if (texture == 'earth') {
+			gl.bindTexture(gl.TEXTURE_2D, earthTexture);
+		} else if (texture == 'galvanized') {
+			gl.bindTexture(gl.TEXTURE_2D, galvanizedTexture);
+		}
+		
+		mat4.rotate(mvMatrix, degToRad(earthAngle), [0, 0, 1]);
+			sphere.draw();
+		mat4.rotate(mvMatrix, degToRad(-earthAngle), [0, 0, 1]);
 	});
 	
 	tick();
