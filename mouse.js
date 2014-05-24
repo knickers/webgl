@@ -9,11 +9,38 @@ function Mouse(canvas, animate) {
 	this.wheelHandlers = [];
 	
 	var self = this;
+	// Standard mouse inputs
 	canvas.onmousedown = function(e) { self.buttonDown(e); };
 	document.onmouseup = function(e) { self.buttonUp(e); };
 	document.onmousemove = function(e) { self.move(e); };
 	canvas.onmousewheel = function(e) { self.wheel(e); };
 	canvas.DOMMouseScroll = function(e) { self.wheel(e); }; // Poor Firefox
+	
+	// Touch screen inputs
+	function logger(name, touches) {
+		var ary = [];
+		for (var i=0; i<touches.length; i++) {
+			ary.push(touches[i].pageX);
+			ary.push(touches[i].pageY);
+		}
+		console.log(name, touches.length, ary);
+	}
+	canvas.addEventListener('touchstart', function(e) {
+		e.preventDefault();
+		logger('start', e.touches);
+	});
+	document.addEventListener('touchmove', function(e) {
+		e.preventDefault();
+		logger('move', e.touches);
+	});
+	document.addEventListener('touchend', function(e) {
+		e.preventDefault();
+		logger('end', e.touches);
+	});
+	document.addEventListener('touchcancel', function(e) {
+		e.preventDefault();
+		logger('cancel', e.touches);
+	});
 }
 
 Mouse.prototype.buttonDown = function(event) {
