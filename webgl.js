@@ -2,8 +2,6 @@ var gl;
 function initGL(canvas) {
 	try {
 		gl = canvas.getContext('experimental-webgl');
-		gl.viewportWidth = canvas.width;
-		gl.viewportHeight = canvas.height;
 	} catch (e) {
 	}
 	if (!gl) {
@@ -204,19 +202,30 @@ function tick() {
 	drawScene();
 }
 
+function resize(canvas) {
+	var html = document.documentElement;
+	var body = document.body;
+	canvas.width = Math.max(
+		body.clientWidth, body.offsetWidth,
+		html.clientWidth, html.offsetWidth
+	);
+	canvas.height = Math.max(
+		body.clientHeight, body.offsetHeight,
+		html.clientHeight, html.offsetHeight
+	);
+	gl.viewportWidth = canvas.width;
+	gl.viewportHeight = canvas.height;
+}
+
 var keyboard;
 var lighting;
 var camera;
 var mouse;
 function webGLStart() {
-	var html = document.documentElement;
-	var body = document.body;
 	var canvas = document.getElementById('canvas');
 	
-	canvas.width = Math.max(body.clientWidth, body.offsetWidth, html.clientWidth, html.offsetWidth);
-	canvas.height = Math.max(body.clientHeight, body.offsetHeight, html.clientHeight, html.offsetHeight);
-	
 	initGL(canvas);
+	resize(canvas);
 	initShaders();
 	
 	var earthTexture = createTexture('earth.jpg');
