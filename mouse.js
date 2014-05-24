@@ -2,6 +2,7 @@ function Mouse(canvas, animate) {
 	this.animate = animate;
 	this.x = null;
 	this.y = null;
+	this.dist = null;
 	this.down = false;
 	this.downHandlers = [];
 	this.upHandlers = [];
@@ -20,8 +21,7 @@ function Mouse(canvas, animate) {
 	function logger(name, touches) {
 		var ary = [];
 		for (var i=0; i<touches.length; i++) {
-			ary.push(touches[i].pageX);
-			ary.push(touches[i].pageY);
+			ary.push(touches[i].pageX, touches[i].pageY);
 		}
 		console.log(name, touches.length, ary);
 	}
@@ -43,7 +43,27 @@ function Mouse(canvas, animate) {
 	});
 }
 
+Mouse.prototype.touchDist = function(touches) {
+	if (touches && touches.length > 1) {
+		var a = touches[0].pageX - touches[1].pageX;
+		var b = touches[0].pageY - touches[1].pageY;
+		return Math.sqrt(a*a + b*b);
+	}
+	return null;
+};
+
 Mouse.prototype.buttonDown = function(event) {
+	if (event.touches) {
+		if (event.touches.length === 1) {
+			event.clientX = event.touches[0].pageX;
+			event.clientY = event.touches[0].pageY;
+		} else if (event.touches.length === 2) {
+			this.dist = this.touchDist(event.touches);
+		} else {
+			return;
+		}
+	}
+	
 	this.down = true;
 	this.x = event.clientX;
 	this.y = event.clientY;
@@ -56,6 +76,18 @@ Mouse.prototype.buttonDown = function(event) {
 };
 
 Mouse.prototype.buttonUp = function(event) {
+	if (event.touches) {
+		if (event.touches.length === 0) {
+		} else if (event.touches.length === 1) {
+			this.x = event.touches[0].pageX;
+			this.y = event.touches[0].pageY;
+			this.dist = null;
+			return;
+		} else {
+			return;
+		}
+	}
+	
 	this.down = false;
 	
 	for (var i=0; i<this.upHandlers.length; i++) {
@@ -66,6 +98,18 @@ Mouse.prototype.buttonUp = function(event) {
 };
 
 Mouse.prototype.move = function(event) {
+	if (event.touches) {
+		if (event.touches.length === 1) { // regular mouse move event
+			event.clientX = event.touches[0].pageX;
+			event.clientY = event.touches[0].pageY;
+		} else if (event.touches.length === 2) { // pinch to zoom
+			this.wheel(event);
+			return;
+		} else {
+			return;
+		}
+	}
+	
 	if (!this.down) {
 		return;
 	}
@@ -73,9 +117,9 @@ Mouse.prototype.move = function(event) {
 	var delta = {
 		x: event.clientX - this.x,
 		y: event.clientY - this.y
-	}
+	};
 	
-	this.x = event.clientX
+	this.x = event.clientX;
 	this.y = event.clientY;
 	
 	for (var i=0; i<this.moveHandlers.length; i++) {
@@ -86,6 +130,19 @@ Mouse.prototype.move = function(event) {
 };
 
 Mouse.prototype.wheel = function(event) {
+	if (event.touches) {
+		if (event.touches.length === 2) {
+			var dist = this.touchDist(event.touches);
+			if (this.dist == null) {
+				this.dist = dist;
+			}
+			event.wheelDelta = dist - this.dist;
+			this.dist = dist;
+		} else {
+			return;
+		}
+	}
+	
 	var delta = event.wheelDelta || -event.detail; // firefox is weird
 	
 	for (var i=0; i<this.wheelHandlers.length; i++) {
