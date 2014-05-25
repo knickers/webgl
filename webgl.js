@@ -225,8 +225,12 @@ function webGLStart() {
 	var canvas = document.getElementById('canvas');
 	
 	initGL(canvas);
-	resize(canvas);
 	initShaders();
+	resize(canvas);
+	window.addEventListener('resize', function(e) {
+		resize(canvas);
+		requestAnimFrame(tick);
+	});
 	
 	var earthTexture = createTexture('earth.jpg');
 	var galvanizedTexture = createTexture('arroway.de_metal+structure+06_d100_flat.jpg');
@@ -247,10 +251,12 @@ function webGLStart() {
 	mouse.addMoveHandler(function(delta) { camera.mouse(delta); });
 	mouse.addWheelHandler(function(delta) { camera.mouse(delta); });
 	
+	/*
 	animationHandlers.push(function(elapsed) {
-		//earthAngle += 35/1000 * elapsed;
-		//teapot.animate(elapsed);
+		earthAngle += 35/1000 * elapsed;
+		teapot.animate(elapsed);
 	});
+	*/
 	
 	drawHandlers.push(function() {
 		useTextures(false);
