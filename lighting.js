@@ -3,9 +3,9 @@ function Lighting() {
 	this.specularHighlights = true;
 	this.point = {
 		position: {
-			x: -10,
-			y: 4,
-			z: -20
+			x: -50,
+			y: 50,
+			z: 100
 		},
 		specular: {
 			r: 0.8,
