@@ -18,28 +18,21 @@ function Mouse(canvas, animate) {
 	canvas.DOMMouseScroll = function(e) { self.wheel(e); }; // Poor Firefox
 	
 	// Touch screen inputs
-	function logger(name, touches) {
-		var ary = [];
-		for (var i=0; i<touches.length; i++) {
-			ary.push(touches[i].pageX, touches[i].pageY);
-		}
-		console.log(name, touches.length, ary);
-	}
 	canvas.addEventListener('touchstart', function(e) {
 		e.preventDefault();
-		logger('start', e.touches);
+		self.buttonDown(e);
 	});
 	document.addEventListener('touchmove', function(e) {
 		e.preventDefault();
-		logger('move', e.touches);
+		self.move(e);
 	});
 	document.addEventListener('touchend', function(e) {
 		e.preventDefault();
-		logger('end', e.touches);
+		self.buttonUp(e);
 	});
 	document.addEventListener('touchcancel', function(e) {
 		e.preventDefault();
-		logger('cancel', e.touches);
+		self.buttonUp(e);
 	});
 }
 
@@ -136,7 +129,7 @@ Mouse.prototype.wheel = function(event) {
 			if (this.dist == null) {
 				this.dist = dist;
 			}
-			event.wheelDelta = dist - this.dist;
+			event.wheelDelta = (dist - this.dist) * 10;
 			this.dist = dist;
 		} else {
 			return;
