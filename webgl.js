@@ -150,7 +150,7 @@ function webGLStart() {
 	var canvas = document.getElementById('canvas');
 	
 	initGL(canvas);
-	initShaders();
+	shader = new Shader(gl);
 	resize(canvas);
 	window.addEventListener('resize', function(e) {
 		resize(canvas);
