@@ -35,27 +35,46 @@ function draw(GL_SHAPE, obj) {
 function makeBuffers(obj) {
 	obj.vertexBuffer = createBuffer(gl.ARRAY_BUFFER, new Float32Array(obj.vertices), 3);
 	obj.normalBuffer = createBuffer(gl.ARRAY_BUFFER, new Float32Array(obj.normals), 3);
-	obj.textureBuffer = createBuffer(gl.ARRAY_BUFFER, new Float32Array(obj.textures), 2);
-	obj.colorBuffer = createBuffer(gl.ARRAY_BUFFER, new Float32Array(obj.colors), 4);
+	if (obj.textures) {
+		obj.textureBuffer = createBuffer(gl.ARRAY_BUFFER, new Float32Array(obj.textures), 2);
+	}
+	if (obj.colors) {
+		obj.colorBuffer = createBuffer(gl.ARRAY_BUFFER, new Float32Array(obj.colors), 4);
+	}
 	obj.indexBuffer = createBuffer(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(obj.indices), 1);
 }
 
-function Line(p1, p2, colors) {
-	this.vertices = p1.concat(p2);
-	this.normals = [0,0,1, 0,0,1];
-	this.textures = [0,0, 1,1];
+function Line(points, colors) {
+	var l = points.length;
+	var n = l / 3;
+	if (l < 6 || l % 3 !== 0) { return null; }
+	this.vertices = points;
+	this.normals = [];
+	while (l > this.normals.length) {
+		this.normals.push(0,0,0); // TODO what is the normal of a line?
+	}
+	this.textures = [];
 	this.colors = colors;
-	this.indices = [0, 1];
+	this.indices = [];
+	for (var i=0; i<n; i++) {
+		var j = i / (n-1);
+		this.textures.push(j, j);
+		this.indices.push(i);
+	}
+	while (n > this.colors.length / 4) {
+		this.colors = this.colors.concat(colors);
+	}
 	makeBuffers(this);
 }
-Line.prototype.draw = function() { draw(gl.LINES, this); };
+Line.prototype.draw = function() { draw(gl.LINE_STRIP, this); };
 
 function Axis(length) {
 	this.origin = [0,0,0];
-	this.axis = [];
-	this.axis.push(new Line(this.origin, [length,0,0], [1,0,0,1, 1,0,0,1]));
-	this.axis.push(new Line(this.origin, [0,length,0], [0,1,0,1, 0,1,0,1]));
-	this.axis.push(new Line(this.origin, [0,0,length], [0,0,1,1, 0,0,1,1]));
+	this.axis = [
+		new Line(this.origin.concat([length,0,0]), [1,0,0,1]),
+		new Line(this.origin.concat([0,length,0]), [0,1,0,1]),
+		new Line(this.origin.concat([0,0,length]), [0,0,1,1]),
+	];
 }
 Axis.prototype.draw = function() {
 	for (var i=0; i<this.axis.length; i++) {
