@@ -239,8 +239,6 @@ function webGLStart() {
 	lighting = new Lighting();
 	camera = new Camera([30,-30,30], [0,0,0], [0,0,1], true);
 	mouse = new Mouse(canvas, tick);
-	//var ellipse = new Ellipse(7, 4, 10, [0,0,0]);
-	//var teapot = new Teapot(180);
 	var sphere = new Sphere(5, 36, 36);
 	var axis = new Axis(10);
 	
@@ -254,15 +252,12 @@ function webGLStart() {
 	/*
 	animationHandlers.push(function(elapsed) {
 		earthAngle += 35/1000 * elapsed;
-		teapot.animate(elapsed);
 	});
 	*/
 	
 	drawHandlers.push(function() {
 		useTextures(false);
 		materialShininess(0.0);
-		//ellipse.draw();
-		//teapot.draw();
 		axis.draw();
 	});
 	
