@@ -48,6 +48,15 @@ function makeBuffers(obj) {
 	obj.indexBuffer = createBuffer(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(obj.indices), 1);
 }
 
+function buildFromJSON(self, obj) {
+	self.vertices = obj.vertices;
+	self.normals = obj.normals;
+	self.textures = obj.textures;
+	self.colors = obj.colors;
+	self.indices = obj.indices;
+	makeBuffers(self);
+}
+
 function Line(points, colors) {
 	var l = points.length;
 	var n = l / 3;

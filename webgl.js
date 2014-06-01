@@ -146,6 +146,7 @@ function degToRad(degrees) {
 
 function useTextures(ok) {
 	gl.uniform1i(shaderProgram.useTexturesUniform, ok);
+	return ok;
 }
 function samplerUniform(num) {
 	gl.uniform1i(shaderProgram.samplerUniform, num);
