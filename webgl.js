@@ -279,4 +279,28 @@ function webGLStart() {
 	
 	tick();
 	setTimeout(tick, 250);
+	
+	
+	// testing grounds
+	
+	/*
+	function Shape(name) {
+		this.name = name;
+	}
+	Shape.prototype.draw = function() {
+		console.log('drawing shape', this.name);
+	};
+	
+	function Point(p) {
+		this.__proto__ = new Shape('point');
+		this.p = p;
+	}
+	
+	var s = new Shape('s');
+	var p = new Point([0,0]);
+	console.log(s);
+	console.log(p);
+	s.draw();
+	p.draw();
+	*/
 }
