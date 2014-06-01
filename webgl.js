@@ -240,7 +240,6 @@ function webGLStart() {
 	lighting = new Lighting();
 	camera = new Camera([30,-30,30], [0,0,0], [0,0,1], true);
 	mouse = new Mouse(canvas, tick);
-	var sphere = new Sphere(5, 36, 36);
 	var axis = new Axis(10);
 	
 	gl.clearColor(0.8, 0.8, 0.8, 1.0);
@@ -250,11 +249,11 @@ function webGLStart() {
 	mouse.addMoveHandler(function(delta) { camera.mouse(delta); });
 	mouse.addWheelHandler(function(delta) { camera.mouse(delta); });
 	
-	/*
+	var sphere = new Sphere(5, 36, 36);
+	var amount = degToRad(35);
 	animationHandlers.push(function(elapsed) {
-		earthAngle += 35/1000 * elapsed;
+		earthAngle += amount/1000 * elapsed;
 	});
-	*/
 	
 	drawHandlers.push(function() {
 		useTextures(false);
@@ -273,9 +272,9 @@ function webGLStart() {
 			gl.bindTexture(gl.TEXTURE_2D, galvanizedTexture);
 		}
 		
-		mat4.rotate(mvMatrix, degToRad(earthAngle), [0, 0, 1]);
+		mat4.rotate(mvMatrix, earthAngle, [0, 0, 1]);
 			sphere.draw();
-		mat4.rotate(mvMatrix, degToRad(-earthAngle), [0, 0, 1]);
+		mat4.rotate(mvMatrix, -earthAngle, [0, 0, 1]);
 	});
 	
 	tick();
