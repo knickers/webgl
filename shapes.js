@@ -96,36 +96,82 @@ Axis.prototype.draw = function() {
 };
 
 function Ellipse(rX, rY, res, center) {
-	this.normals = [];
-	this.vertices = [];
-	this.textures = [];
-	this.indices = [];
-	
-	this.normals.push(0,0,1);
-	this.vertices.push(center);
-	this.textures.push(0.5, 0.5);
-	this.indices.push(0);
+	this.normals = [0,0,1];
+	this.vertices = center;
+	this.textures = [0.5, 0.5];
+	this.colors = [0,0,0,1];
+	this.indices = [0];
 	
 	for (var i=0; i<=res; i++) {
-		var theta = i * Math.PI;
+		var theta = i/res * 2 * Math.PI;
 		var sin = Math.sin(theta);
 		var cos = Math.cos(theta);
 		
+		var c = Math.abs(i/res*2 - 1);
 		//var angle = Math.atan2(center[2], )
 		this.normals.push(cos, sin, 0); // TODO fix normal Z
 		this.vertices.push(rX*cos, rY*sin, 0);
 		this.textures.push(1-(i/res), 1);
-		this.indices.push(i);
+		this.colors.push(c,c,0,1);
+		this.indices.push(i+1);
 	}
 	
 	makeBuffers(this);
 }
-Ellipse.prototype.draw = function() { draw(gl.TRIANGLE_STRIP, this); };
+Ellipse.prototype.draw = function() { draw(gl.TRIANGLE_FAN, this); };
 
 function Circle(r, res) {
-	this.ellipse = new Ellipse(r, r, res, [0,0,0]);
+	this.__proto__ = new Ellipse(r, r, res, [0,0,0]);
 }
-Circle.prototype.draw = function() { this.ellipse.draw(); };
+
+function Cone(r, h, res) {
+	this.__proto__ = new Ellipse(r, r, res, [0,0,h]);
+}
+
+function ExtrudedEllipse(botRX, botRY, topRX, topRY, h, res, solid) {
+	this.solid = solid;
+	this.normals = [];
+	this.vertices = [];
+	this.textures = [];
+	this.colors = [];
+	this.indices = [];
+	
+	if (this.solid) {
+		this.center = [0,0,0];
+		this.botCap = new Ellipse(botRX, botRY, res, center);
+		this.topCap = new Ellipse(topRX, topRY, res, center);
+	}
+	
+	for (var i=0; i<=res; i++) {
+		var theta = i/res * 2 * Math.PI;
+		var sin = Math.sin(theta);
+		var cos = Math.cos(theta);
+		
+		for (var j=0; j<2; j++) {
+			var x = j ? topRX : botRX;
+			var y = j ? topRY : botRY;
+			this.normals.push(cos, sin, 0);
+			this.vertices.push(x*cos, y*sin, j*h);
+			this.textures.push(1-(i/res), j);
+			this.colors.push(0,0,0,1);
+			this.indices.push(i+1+j);
+		}
+	}
+	
+	console.log(this);
+	makeBuffers(this);
+}
+ExtrudedEllipse.prototype.draw = function() {
+	if (this.solid) {
+		this.botCap.draw();
+		this.topCap.draw();
+	}
+	draw(gl.TRIANGLE_STRIP, this);
+};
+
+function Cylinder(r, res) {
+	this.__proto__ = new Ellipse(r, r, res, [0,0,0]);
+}
 
 function Sphere(r, lats, lngs) {
 	this.normals = [];
