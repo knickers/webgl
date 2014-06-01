@@ -1,15 +1,23 @@
 var gl;
+
 function initGL(canvas) {
-	try {
-		gl = canvas.getContext('experimental-webgl');
-	} catch (e) {
-	}
-	if (!gl) {
-		alert('Could not initialise WebGL, sorry :-(');
-	}
+try {
+	gl = canvas.getContext('experimental-webgl');
+} catch (e) {
+}
+if (!gl) {
+	alert('Could not initialise WebGL, sorry :-(');
 }
 
-function getShader(gl, id) {
+gl.shaderProgram;
+gl.mvMatrixStack = [];
+gl.mvMatrix = mat4.create();
+gl.pMatrix = mat4.create();
+gl.drawHandlers = [];
+gl.animationHandlers = [];
+gl.lastAnimationTime = 0;
+
+gl.getShader = function(id) {
 	var shaderScript = document.getElementById(id);
 	if (!shaderScript) {
 		return null;
@@ -42,51 +50,50 @@ function getShader(gl, id) {
 	}
 	
 	return shader;
-}
+};
 
-var shaderProgram;
-function initShaders() {
-	var fragmentShader = getShader(gl, 'per-fragment-lighting-fs');
-	var vertexShader = getShader(gl, 'per-fragment-lighting-vs');
+gl.initShaders = function() {
+	var fragmentShader = gl.getShader('per-fragment-lighting-fs');
+	var vertexShader = gl.getShader('per-fragment-lighting-vs');
 	
-	shaderProgram = gl.createProgram();
-	gl.attachShader(shaderProgram, vertexShader);
-	gl.attachShader(shaderProgram, fragmentShader);
-	gl.linkProgram(shaderProgram);
+	gl.shaderProgram = gl.createProgram();
+	gl.attachShader(gl.shaderProgram, vertexShader);
+	gl.attachShader(gl.shaderProgram, fragmentShader);
+	gl.linkProgram(gl.shaderProgram);
 	
-	if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+	if (!gl.getProgramParameter(gl.shaderProgram, gl.LINK_STATUS)) {
 		alert('Could not initialise shaders');
 	}
 	
-	gl.useProgram(shaderProgram);
+	gl.useProgram(gl.shaderProgram);
 	
-	shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, 'aVertexPosition');
-	gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+	gl.shaderProgram.vertexPositionAttribute = gl.getAttribLocation(gl.shaderProgram, 'aVertexPosition');
+	gl.enableVertexAttribArray(gl.shaderProgram.vertexPositionAttribute);
 	
-	shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, 'aVertexNormal');
-	gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
+	gl.shaderProgram.vertexNormalAttribute = gl.getAttribLocation(gl.shaderProgram, 'aVertexNormal');
+	gl.enableVertexAttribArray(gl.shaderProgram.vertexNormalAttribute);
 	
-	shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, 'aTextureCoord');
-	gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
+	gl.shaderProgram.textureCoordAttribute = gl.getAttribLocation(gl.shaderProgram, 'aTextureCoord');
+	gl.enableVertexAttribArray(gl.shaderProgram.textureCoordAttribute);
 	
-	shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
-	gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
+	gl.shaderProgram.vertexColorAttribute = gl.getAttribLocation(gl.shaderProgram, "aVertexColor");
+	gl.enableVertexAttribArray(gl.shaderProgram.vertexColorAttribute);
 	
-	shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, 'uPMatrix');
-	shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, 'uMVMatrix');
-	shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram, 'uNMatrix');
-	shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, 'uSampler');
-	shaderProgram.materialShininessUniform = gl.getUniformLocation(shaderProgram, 'uMaterialShininess');
-	shaderProgram.showSpecularHighlightsUniform = gl.getUniformLocation(shaderProgram, 'uShowSpecularHighlights');
-	shaderProgram.useTexturesUniform = gl.getUniformLocation(shaderProgram, 'uUseTextures');
-	shaderProgram.useLightingUniform = gl.getUniformLocation(shaderProgram, 'uUseLighting');
-	shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram, 'uAmbientColor');
-	shaderProgram.pointLightingLocationUniform = gl.getUniformLocation(shaderProgram, 'uPointLightingLocation');
-	shaderProgram.pointLightingSpecularColorUniform = gl.getUniformLocation(shaderProgram, 'uPointLightingSpecularColor');
-	shaderProgram.pointLightingDiffuseColorUniform = gl.getUniformLocation(shaderProgram, 'uPointLightingDiffuseColor');
-}
+	gl.shaderProgram.pMatrixUniform = gl.getUniformLocation(gl.shaderProgram, 'uPMatrix');
+	gl.shaderProgram.mvMatrixUniform = gl.getUniformLocation(gl.shaderProgram, 'uMVMatrix');
+	gl.shaderProgram.nMatrixUniform = gl.getUniformLocation(gl.shaderProgram, 'uNMatrix');
+	gl.shaderProgram.samplerUniform = gl.getUniformLocation(gl.shaderProgram, 'uSampler');
+	gl.shaderProgram.materialShininessUniform = gl.getUniformLocation(gl.shaderProgram, 'uMaterialShininess');
+	gl.shaderProgram.showSpecularHighlightsUniform = gl.getUniformLocation(gl.shaderProgram, 'uShowSpecularHighlights');
+	gl.shaderProgram.useTexturesUniform = gl.getUniformLocation(gl.shaderProgram, 'uUseTextures');
+	gl.shaderProgram.useLightingUniform = gl.getUniformLocation(gl.shaderProgram, 'uUseLighting');
+	gl.shaderProgram.ambientColorUniform = gl.getUniformLocation(gl.shaderProgram, 'uAmbientColor');
+	gl.shaderProgram.pointLightingLocationUniform = gl.getUniformLocation(gl.shaderProgram, 'uPointLightingLocation');
+	gl.shaderProgram.pointLightingSpecularColorUniform = gl.getUniformLocation(gl.shaderProgram, 'uPointLightingSpecularColor');
+	gl.shaderProgram.pointLightingDiffuseColorUniform = gl.getUniformLocation(gl.shaderProgram, 'uPointLightingDiffuseColor');
+};
 
-function createTexture(imgSrc) {
+gl.buildTexture = function(imgSrc) {
 	var texture = gl.createTexture();
 	texture.image = new Image();
 	texture.image.onload = function () {
@@ -101,9 +108,9 @@ function createTexture(imgSrc) {
 	}
 	texture.image.src = imgSrc;
 	return texture;
-}
+};
 
-function createBuffer(GL_BUFFER, data, itemSize) {
+gl.buildBuffer = function(GL_BUFFER, data, itemSize) {
 	var buf = gl.createBuffer();
 	gl.bindBuffer(GL_BUFFER, buf);
 	gl.bufferData(GL_BUFFER, data, gl.STATIC_DRAW);
@@ -112,195 +119,120 @@ function createBuffer(GL_BUFFER, data, itemSize) {
 	buf.numItems = data.length / itemSize;
 	
 	return buf;
-}
+};
 
-var mvMatrix = mat4.create();
-var mvMatrixStack = [];
-var pMatrix = mat4.create();
-function mvPushMatrix() {
+gl.pushMatrix = function() {
 	var copy = mat4.create();
-	mat4.set(mvMatrix, copy);
-	mvMatrixStack.push(copy);
-}
+	mat4.set(gl.mvMatrix, copy);
+	gl.mvMatrixStack.push(copy);
+};
 
-function mvPopMatrix() {
-	if (mvMatrixStack.length == 0) {
+gl.popMatrix = function() {
+	if (gl.mvMatrixStack.length == 0) {
 		throw 'Invalid popMatrix!';
 	}
-	mvMatrix = mvMatrixStack.pop();
-}
+	gl.mvMatrix = gl.mvMatrixStack.pop();
+};
 
-function setMatrixUniforms() {
-	gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
-	gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
-	
+gl.setMatrixUniforms = function() {
 	var normalMatrix = mat3.create();
-	mat4.toInverseMat3(mvMatrix, normalMatrix);
+	mat4.toInverseMat3(gl.mvMatrix, normalMatrix);
 	mat3.transpose(normalMatrix);
-	gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
-}
+	
+	gl.uniformMatrix4fv(
+		gl.shaderProgram.pMatrixUniform,
+		false, gl.pMatrix
+	);
+	gl.uniformMatrix4fv(
+		gl.shaderProgram.mvMatrixUniform,
+		false, gl.mvMatrix
+	);
+	gl.uniformMatrix3fv(
+		gl.shaderProgram.nMatrixUniform,
+		false, normalMatrix
+	);
+};
 
-function degToRad(degrees) {
-	return degrees * Math.PI / 180;
-}
+gl.useTextures = function(ok) {
+	gl.uniform1i(gl.shaderProgram.useTexturesUniform, ok);
+};
+gl.samplerUniform = function(num) {
+	gl.uniform1i(gl.shaderProgram.samplerUniform, num);
+};
+gl.materialShininess = function(num) {
+	gl.uniform1f(gl.shaderProgram.materialShininessUniform, num);
+};
 
-function useTextures(ok) {
-	gl.uniform1i(shaderProgram.useTexturesUniform, ok);
-}
-function samplerUniform(num) {
-	gl.uniform1i(shaderProgram.samplerUniform, num);
-}
-function materialShininess(num) {
-	gl.uniform1f(shaderProgram.materialShininessUniform, num);
-}
-
-var drawHandlers = [];
-function drawScene() {
-	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+gl.draw = function() {
+	gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	
-	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+	mat4.perspective(
+		45,
+		gl.drawingBufferWidth / gl.drawingBufferHeight,
+		0.1, 100.0,
+		gl.pMatrix
+	);
 	
-	gl.uniform1i(shaderProgram.showSpecularHighlightsUniform, lighting.specularHighlights);
+	gl.uniform1i(
+		gl.shaderProgram.showSpecularHighlightsUniform,
+		gl.lighting.specularHighlights
+	);
+	gl.uniform1i(
+		gl.shaderProgram.useLightingUniform,
+		gl.lighting.enabled
+	);
+	gl.lighting.draw();
 	
-	gl.uniform1i(shaderProgram.useLightingUniform, lighting.enabled);
-	lighting.draw();
+	mat4.identity(gl.mvMatrix);
+	gl.camera.transform(gl.mvMatrix);
 	
-	mat4.identity(mvMatrix);
-	camera.transform(mvMatrix);
+	gl.samplerUniform(0);
 	
-	samplerUniform(0);
-	
-	for (var i=0; i<drawHandlers.length; i++) {
-		drawHandlers[i]();
+	for (var i=0; i<gl.drawHandlers.length; i++) {
+		gl.drawHandlers[i]();
 	}
-	
-}
+};
 
-var animationHandlers = [];
-var earthAngle = 0;
-var lastTime = 0;
-function animate() {
-	var timeNow = new Date().getTime();
-	if (lastTime != 0) {
-		var elapsed = timeNow - lastTime;
+gl.animate = function() {
+	var now = new Date().getTime();
+	if (gl.lastAnimationTime != 0) {
+		var elapsed = now - gl.lastAnimationTime;
 		
-		for (var i=0; i<animationHandlers.length; i++) {
-			animationHandlers[i](elapsed);
+		for (var i=0; i<gl.animationHandlers.length; i++) {
+			gl.animationHandlers[i](elapsed);
 		}
 	}
-	lastTime = timeNow;
-}
+	gl.lastAnimationTime = now;
+};
 
-function tick() {
+gl.tick = function() {
 	//requestAnimFrame(tick);
-	if (keyboard.update()) {
-		requestAnimFrame(tick);
+	if (gl.keyboard.update()) {
+		requestAnimFrame(gl.tick);
 	}
-	animate();
 	
-	drawScene();
+	gl.animate();
+	gl.draw();
+};
+
+gl.keyboard = new Keyboard(canvas, gl.tick);
+gl.lighting = new Lighting();
+gl.camera = new Camera([30,-30,30], [0,0,0], [0,0,1], true);
+gl.mouse = new Mouse(canvas, gl.tick);
+
+gl.initShaders();
+
+gl.keyboard.addDownHandler(function(keys) { gl.camera.keyboard(keys);});
+gl.mouse.addMoveHandler(function(delta) { gl.camera.mouse(delta); });
+gl.mouse.addWheelHandler(function(delta) { gl.camera.mouse(delta); });
+
+gl.clearColor(0.8, 0.8, 0.8, 1.0);
+gl.enable(gl.DEPTH_TEST);
+
+return gl;
+
 }
 
-function resize(canvas) {
-	var html = document.documentElement;
-	var body = document.body;
-	canvas.width = Math.max(
-		body.clientWidth, body.offsetWidth,
-		html.clientWidth, html.offsetWidth
-	);
-	canvas.height = Math.max(
-		body.clientHeight, body.offsetHeight,
-		html.clientHeight, html.offsetHeight
-	);
-	gl.viewportWidth = canvas.width;
-	gl.viewportHeight = canvas.height;
-}
-
-var keyboard;
-var lighting;
-var camera;
-var mouse;
-function webGLStart() {
-	var canvas = document.getElementById('canvas');
-	
-	initGL(canvas);
-	initShaders();
-	resize(canvas);
-	window.addEventListener('resize', function(e) {
-		resize(canvas);
-		requestAnimFrame(tick);
-	});
-	
-	var earthTexture = createTexture('earth.jpg');
-	var galvanizedTexture = createTexture('arroway.de_metal+structure+06_d100_flat.jpg');
-	
-	keyboard = new Keyboard(canvas, tick);
-	lighting = new Lighting();
-	camera = new Camera([30,-30,30], [0,0,0], [0,0,1], true);
-	mouse = new Mouse(canvas, tick);
-	var sphere = new Sphere(5, 36, 36);
-	var axis = new Axis(10);
-	
-	gl.clearColor(0.8, 0.8, 0.8, 1.0);
-	gl.enable(gl.DEPTH_TEST);
-	
-	keyboard.addDownHandler(function(keys) { camera.keyboard(keys); });
-	mouse.addMoveHandler(function(delta) { camera.mouse(delta); });
-	mouse.addWheelHandler(function(delta) { camera.mouse(delta); });
-	
-	/*
-	animationHandlers.push(function(elapsed) {
-		earthAngle += 35/1000 * elapsed;
-	});
-	*/
-	
-	drawHandlers.push(function() {
-		useTextures(false);
-		materialShininess(0.0);
-		axis.draw();
-	});
-	
-	drawHandlers.push(function() {
-		materialShininess(32.0);
-		var texture = document.getElementById('texture').value;
-		useTextures(texture != 'none');
-		gl.activeTexture(gl.TEXTURE0);
-		if (texture == 'earth') {
-			gl.bindTexture(gl.TEXTURE_2D, earthTexture);
-		} else if (texture == 'galvanized') {
-			gl.bindTexture(gl.TEXTURE_2D, galvanizedTexture);
-		}
-		
-		mat4.rotate(mvMatrix, degToRad(earthAngle), [0, 0, 1]);
-			sphere.draw();
-		mat4.rotate(mvMatrix, degToRad(-earthAngle), [0, 0, 1]);
-	});
-	
-	tick();
-	setTimeout(tick, 250);
-	
-	
-	// testing grounds
-	
-	/*
-	function Shape(name) {
-		this.name = name;
-	}
-	Shape.prototype.draw = function() {
-		console.log('drawing shape', this.name);
-	};
-	
-	function Point(p) {
-		this.__proto__ = new Shape('point');
-		this.p = p;
-	}
-	
-	var s = new Shape('s');
-	var p = new Point([0,0]);
-	console.log(s);
-	console.log(p);
-	s.draw();
-	p.draw();
-	*/
-}
+function dtor(degrees) { return degrees * Math.PI / 180; }
+function rtod(radians) { return radians / Math.PI * 180; }

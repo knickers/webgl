@@ -30,28 +30,28 @@ function Lighting() {
 Lighting.prototype.draw = function() {
 	if (this.enabled) {
 		gl.uniform3f(
-			shaderProgram.ambientColorUniform,
+			gl.shaderProgram.ambientColorUniform,
 			this.ambient.color.r,
 			this.ambient.color.g,
 			this.ambient.color.b
 		);
 		
 		gl.uniform3f(
-			shaderProgram.pointLightingLocationUniform,
+			gl.shaderProgram.pointLightingLocationUniform,
 			this.point.position.x,
 			this.point.position.y,
 			this.point.position.z
 		);
 		
 		gl.uniform3f(
-			shaderProgram.pointLightingSpecularColorUniform,
+			gl.shaderProgram.pointLightingSpecularColorUniform,
 			this.point.specular.r,
 			this.point.specular.g,
 			this.point.specular.b
 		);
 		
 		gl.uniform3f(
-			shaderProgram.pointLightingDiffuseColorUniform,
+			gl.shaderProgram.pointLightingDiffuseColorUniform,
 			this.point.diffuse.r,
 			this.point.diffuse.g,
 			this.point.diffuse.b
