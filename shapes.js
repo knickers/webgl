@@ -13,19 +13,23 @@ function draw(GL_SHAPE, obj) {
 		gl.FLOAT, false, 0, 0
 	);
 	
-	gl.bindBuffer(gl.ARRAY_BUFFER, obj.textureBuffer);
-	gl.vertexAttribPointer(
-		shaderProgram.textureCoordAttribute,
-		obj.textureBuffer.itemSize,
-		gl.FLOAT, false, 0, 0
-	);
+	if (obj.textureBuffer) {
+		gl.bindBuffer(gl.ARRAY_BUFFER, obj.textureBuffer);
+		gl.vertexAttribPointer(
+			shaderProgram.textureCoordAttribute,
+			obj.textureBuffer.itemSize,
+			gl.FLOAT, false, 0, 0
+		);
+	}
 	
-	gl.bindBuffer(gl.ARRAY_BUFFER, obj.colorBuffer);
-	gl.vertexAttribPointer(
-		shaderProgram.vertexColorAttribute,
-		obj.colorBuffer.itemSize,
-		gl.FLOAT, false, 0, 0
-	);
+	if (obj.colorBuffer) {
+		gl.bindBuffer(gl.ARRAY_BUFFER, obj.colorBuffer);
+		gl.vertexAttribPointer(
+			shaderProgram.vertexColorAttribute,
+			obj.colorBuffer.itemSize,
+			gl.FLOAT, false, 0, 0
+		);
+	}
 	
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.indexBuffer);
 	setMatrixUniforms();
