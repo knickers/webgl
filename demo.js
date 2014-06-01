@@ -1,4 +1,4 @@
-function resize(gl) {
+function resize() {
 	var html = document.documentElement;
 	var body = document.body;
 	gl.canvas.width = Math.max(
@@ -16,11 +16,9 @@ function webGLStart() {
 	
 	initGL(canvas);
 	
-	console.log(gl);
-	
-	resize(gl);
+	resize();
 	window.addEventListener('resize', function(e) {
-		resize(gl);
+		resize();
 		requestAnimFrame(gl.tick);
 	});
 	
