@@ -103,7 +103,7 @@ function createTexture(imgSrc) {
 	return texture;
 }
 
-function createBuffer(GL_BUFFER, data, itemSize, numItems) {
+function createBuffer(GL_BUFFER, data, itemSize) {
 	var buf = gl.createBuffer();
 	gl.bindBuffer(GL_BUFFER, buf);
 	gl.bufferData(GL_BUFFER, data, gl.STATIC_DRAW);
@@ -242,7 +242,7 @@ function webGLStart() {
 	var sphere = new Sphere(5, 36, 36);
 	var axis = new Axis(10);
 	
-	gl.clearColor(0.0, 0.0, 0.0, 1.0);
+	gl.clearColor(0.8, 0.8, 0.8, 1.0);
 	gl.enable(gl.DEPTH_TEST);
 	
 	keyboard.addDownHandler(function(keys) { camera.keyboard(keys); });
