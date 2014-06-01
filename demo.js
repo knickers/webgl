@@ -12,9 +12,7 @@ function resize() {
 }
 
 function webGLStart() {
-	var canvas = document.getElementById('canvas');
-	
-	initGL(canvas);
+	initGL(document.getElementById('canvas'));
 	
 	resize();
 	window.addEventListener('resize', function(e) {
@@ -22,13 +20,14 @@ function webGLStart() {
 		requestAnimFrame(gl.tick);
 	});
 	
-	var earthTexture = gl.buildTexture('earth.jpg');
-	var galvanizedTexture = gl.buildTexture('arroway.de_metal+structure+06_d100_flat.jpg');
-	
+	var textures = {
+		'earth': gl.buildTexture('earth.jpg'),
+		'galvanized': gl.buildTexture('galvanized.jpg')
+	};
+	var earthAngle = 0;
 	var sphere = new Sphere(5, 36, 36);
 	var axis = new Axis(10);
 	
-	var earthAngle = 0;
 	/*
 	var amount = dtor(35);
 	animationHandlers.push(function(elapsed) {
@@ -41,15 +40,7 @@ function webGLStart() {
 		gl.materialShininess(0.0);
 		axis.draw();
 		
-		var texture = document.getElementById('texture').value;
-		gl.useTextures(texture != 'none');
-		gl.activeTexture(gl.TEXTURE0);
-		if (texture == 'earth') {
-			gl.bindTexture(gl.TEXTURE_2D, earthTexture);
-		} else if (texture == 'galvanized') {
-			gl.bindTexture(gl.TEXTURE_2D, galvanizedTexture);
-		}
-		
+		gl.setTexture(textures[document.getElementById('texture').value]);
 		gl.materialShininess(32.0);
 		mat4.rotate(gl.mvMatrix, earthAngle, [0, 0, 1]);
 			sphere.draw();
@@ -58,8 +49,4 @@ function webGLStart() {
 	
 	gl.tick();
 	setTimeout(gl.tick, 250);
-	
-	
-	// testing grounds
-	
 }

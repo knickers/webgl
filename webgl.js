@@ -153,14 +153,19 @@ gl.setMatrixUniforms = function() {
 	);
 };
 
-gl.useTextures = function(ok) {
-	gl.uniform1i(gl.shaderProgram.useTexturesUniform, ok);
+gl.materialShininess = function(num) {
+	gl.uniform1f(gl.shaderProgram.materialShininessUniform, num);
 };
 gl.samplerUniform = function(num) {
 	gl.uniform1i(gl.shaderProgram.samplerUniform, num);
 };
-gl.materialShininess = function(num) {
-	gl.uniform1f(gl.shaderProgram.materialShininessUniform, num);
+gl.useTextures = function(ok) {
+	gl.uniform1i(gl.shaderProgram.useTexturesUniform, ok);
+};
+gl.setTexture = function(texture) {
+	gl.useTextures(!!texture);
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, texture);
 };
 
 gl.draw = function() {
@@ -229,8 +234,6 @@ gl.mouse.addWheelHandler(function(delta) { gl.camera.mouse(delta); });
 
 gl.clearColor(0.8, 0.8, 0.8, 1.0);
 gl.enable(gl.DEPTH_TEST);
-
-return gl;
 
 }
 
