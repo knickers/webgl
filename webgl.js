@@ -234,5 +234,7 @@ gl.mouse.addWheelHandler(function(delta) { gl.camera.mouse(delta); });
 gl.clearColor(0.8, 0.8, 0.8, 1.0);
 gl.enable(gl.DEPTH_TEST);
 
+}
+
 function dtor(degrees) { return degrees * Math.PI / 180; }
 function rtod(radians) { return radians / Math.PI * 180; }
