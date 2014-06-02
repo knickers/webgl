@@ -149,10 +149,7 @@ function Sphere(r, lats, lngs) {
 			var z = cosTheta;
 			this.normals.push(x, y, z);
 			this.vertices.push(r*x, r*y, r*z);
-			
-			var u = lng / lngs;
-			var v = 1 - (lat / lats);
-			this.textures.push(u, v);
+			this.textures.push(lng/lngs, 1-(lat/lats));
 			this.colors.push(1,1,1,1);
 			
 			if (lat < lats && lng < lngs) {

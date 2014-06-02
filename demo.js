@@ -22,7 +22,7 @@ function webGLStart() {
 	
 	var axis = new Axis(10);
 	var sphere = new Sphere(5, 36, 36);
-	var earthAngle = dtor(-130);
+	var earthAngle = dtor(-180);
 	var earthSpeed = dtor(35) / 1000;
 	var textures = {
 		'earth': gl.buildTexture('earth.jpg'),
