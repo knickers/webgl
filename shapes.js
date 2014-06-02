@@ -1,14 +1,14 @@
 function draw(GL_SHAPE, obj) {
 	gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexBuffer);
 	gl.vertexAttribPointer(
-		shaderProgram.vertexPositionAttribute,
+		gl.shaderProgram.vertexPositionAttribute,
 		obj.vertexBuffer.itemSize,
 		gl.FLOAT, false, 0, 0
 	);
 	
 	gl.bindBuffer(gl.ARRAY_BUFFER, obj.normalBuffer);
 	gl.vertexAttribPointer(
-		shaderProgram.vertexNormalAttribute,
+		gl.shaderProgram.vertexNormalAttribute,
 		obj.normalBuffer.itemSize,
 		gl.FLOAT, false, 0, 0
 	);
@@ -16,7 +16,7 @@ function draw(GL_SHAPE, obj) {
 	if (obj.textureBuffer) {
 		gl.bindBuffer(gl.ARRAY_BUFFER, obj.textureBuffer);
 		gl.vertexAttribPointer(
-			shaderProgram.textureCoordAttribute,
+			gl.shaderProgram.textureCoordAttribute,
 			obj.textureBuffer.itemSize,
 			gl.FLOAT, false, 0, 0
 		);
@@ -25,27 +25,37 @@ function draw(GL_SHAPE, obj) {
 	if (obj.colorBuffer) {
 		gl.bindBuffer(gl.ARRAY_BUFFER, obj.colorBuffer);
 		gl.vertexAttribPointer(
-			shaderProgram.vertexColorAttribute,
+			gl.shaderProgram.vertexColorAttribute,
 			obj.colorBuffer.itemSize,
 			gl.FLOAT, false, 0, 0
 		);
 	}
 	
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.indexBuffer);
-	setMatrixUniforms();
+	gl.setMatrixUniforms();
 	gl.drawElements(GL_SHAPE, obj.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 }
 
 function makeBuffers(obj) {
-	obj.vertexBuffer = createBuffer(gl.ARRAY_BUFFER, new Float32Array(obj.vertices), 3);
-	obj.normalBuffer = createBuffer(gl.ARRAY_BUFFER, new Float32Array(obj.normals), 3);
+	obj.vertexBuffer = gl.buildBuffer(
+		gl.ARRAY_BUFFER, new Float32Array(obj.vertices), 3
+	);
+	obj.normalBuffer = gl.buildBuffer(
+		gl.ARRAY_BUFFER, new Float32Array(obj.normals), 3
+	);
 	if (obj.textures) {
-		obj.textureBuffer = createBuffer(gl.ARRAY_BUFFER, new Float32Array(obj.textures), 2);
+		obj.textureBuffer = gl.buildBuffer(
+			gl.ARRAY_BUFFER, new Float32Array(obj.textures), 2
+		);
 	}
 	if (obj.colors) {
-		obj.colorBuffer = createBuffer(gl.ARRAY_BUFFER, new Float32Array(obj.colors), 4);
+		obj.colorBuffer = gl.buildBuffer(
+			gl.ARRAY_BUFFER, new Float32Array(obj.colors), 4
+		);
 	}
-	obj.indexBuffer = createBuffer(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(obj.indices), 1);
+	obj.indexBuffer = gl.buildBuffer(
+		gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(obj.indices), 1
+	);
 }
 
 function buildFromJSON(self, obj) {
@@ -194,10 +204,7 @@ function Sphere(r, lats, lngs) {
 			var z = cosTheta;
 			this.normals.push(x, y, z);
 			this.vertices.push(r*x, r*y, r*z);
-			
-			var u = 1 - (lng / lngs);
-			var v = 1 - (lat / lats);
-			this.textures.push(u, v);
+			this.textures.push(lng/lngs, 1-(lat/lats));
 			this.colors.push(1,1,1,1);
 			
 			if (lat < lats && lng < lngs) {
