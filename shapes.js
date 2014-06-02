@@ -37,15 +37,25 @@ function draw(GL_SHAPE, obj) {
 }
 
 function makeBuffers(obj) {
-	obj.vertexBuffer = gl.buildBuffer(gl.ARRAY_BUFFER, new Float32Array(obj.vertices), 3);
-	obj.normalBuffer = gl.buildBuffer(gl.ARRAY_BUFFER, new Float32Array(obj.normals), 3);
+	obj.vertexBuffer = gl.buildBuffer(
+		gl.ARRAY_BUFFER, new Float32Array(obj.vertices), 3
+	);
+	obj.normalBuffer = gl.buildBuffer(
+		gl.ARRAY_BUFFER, new Float32Array(obj.normals), 3
+	);
 	if (obj.textures) {
-		obj.textureBuffer = gl.buildBuffer(gl.ARRAY_BUFFER, new Float32Array(obj.textures), 2);
+		obj.textureBuffer = gl.buildBuffer(
+			gl.ARRAY_BUFFER, new Float32Array(obj.textures), 2
+		);
 	}
 	if (obj.colors) {
-		obj.colorBuffer = gl.buildBuffer(gl.ARRAY_BUFFER, new Float32Array(obj.colors), 4);
+		obj.colorBuffer = gl.buildBuffer(
+			gl.ARRAY_BUFFER, new Float32Array(obj.colors), 4
+		);
 	}
-	obj.indexBuffer = gl.buildBuffer(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(obj.indices), 1);
+	obj.indexBuffer = gl.buildBuffer(
+		gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(obj.indices), 1
+	);
 }
 
 function Line(points, colors) {

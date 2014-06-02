@@ -20,20 +20,18 @@ function webGLStart() {
 		requestAnimFrame(gl.tick);
 	});
 	
+	var axis = new Axis(10);
+	var sphere = new Sphere(5, 36, 36);
+	var earthAngle = 0;
+	var earthSpeed = dtor(35) / 1000;
 	var textures = {
 		'earth': gl.buildTexture('earth.jpg'),
 		'galvanized': gl.buildTexture('galvanized.jpg')
 	};
-	var earthAngle = 0;
-	var sphere = new Sphere(5, 36, 36);
-	var axis = new Axis(10);
 	
-	/*
-	var amount = dtor(35);
-	animationHandlers.push(function(elapsed) {
-		earthAngle += amount / 1000 * elapsed;
-	});
-	*/
+/*	gl.animationHandlers.push(function(elapsed) {
+		earthAngle += earthSpeed * elapsed;
+	});*/
 	
 	gl.drawHandlers.push(function() {
 		gl.useTextures(false);

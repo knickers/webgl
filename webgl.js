@@ -213,7 +213,7 @@ gl.animate = function() {
 
 gl.tick = function() {
 	//requestAnimFrame(tick);
-	if (gl.keyboard.update()) {
+	if (gl.animationHandlers.length || gl.keyboard.update()) {
 		requestAnimFrame(gl.tick);
 	}
 	
