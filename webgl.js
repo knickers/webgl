@@ -9,7 +9,6 @@ if (!gl) {
 	alert('Could not initialise WebGL, sorry :-(');
 }
 
-gl.shaderProgram;
 gl.mvMatrixStack = [];
 gl.mvMatrix = mat4.create();
 gl.pMatrix = mat4.create();

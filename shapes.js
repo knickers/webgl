@@ -150,7 +150,7 @@ function Sphere(r, lats, lngs) {
 			this.normals.push(x, y, z);
 			this.vertices.push(r*x, r*y, r*z);
 			
-			var u = 1 - (lng / lngs);
+			var u = lng / lngs;
 			var v = 1 - (lat / lats);
 			this.textures.push(u, v);
 			this.colors.push(1,1,1,1);
