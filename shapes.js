@@ -143,18 +143,19 @@ function Cone(r, h, res) {
 	this.__proto__ = new Ellipse(r, r, res, [0,0,h]);
 }
 
-function ExtrudedEllipse(botRX, botRY, topRX, topRY, h, res, solid) {
+function EllipticalCylinder(botRX, botRY, topRX, topRY, h, res, solid) {
 	this.solid = solid;
+	this.height = h;
 	this.normals = [];
 	this.vertices = [];
 	this.textures = [];
 	this.colors = [];
 	this.indices = [];
+	var origin = [0,0,0];
 	
 	if (this.solid) {
-		this.center = [0,0,0];
-		this.botCap = new Ellipse(botRX, botRY, res, center);
-		this.topCap = new Ellipse(topRX, topRY, res, center);
+		this.botCap = new Ellipse(botRX, botRY, res, origin);
+		this.topCap = new Ellipse(topRX, topRY, res, origin);
 	}
 	
 	for (var i=0; i<=res; i++) {
@@ -162,24 +163,30 @@ function ExtrudedEllipse(botRX, botRY, topRX, topRY, h, res, solid) {
 		var sin = Math.sin(theta);
 		var cos = Math.cos(theta);
 		
-		for (var j=0; j<2; j++) {
+		var topR = pointDist(origin, [topRX*cos, topRY*sin, 0]);
+		var botR = pointDist(origin, [botRX*cos, botRY*sin, 0]);
+		var tilt = Math.atan2(h, topR - botR);
+		var sinT = Math.sin(tilt);
+		
+		for (var j=0; j<2; j++) { // 0 = bottom, 1 = top
 			var x = j ? topRX : botRX;
 			var y = j ? topRY : botRY;
-			this.normals.push(cos, sin, 0);
+			this.normals.push(cos*sinT, sin*sinT, Math.cos(tilt));
 			this.vertices.push(x*cos, y*sin, j*h);
 			this.textures.push(1-(i/res), j);
 			this.colors.push(0,0,0,1);
-			this.indices.push(i+1+j);
+			this.indices.push(i*2 + j);
 		}
 	}
 	
-	console.log(this);
 	makeBuffers(this);
 }
-ExtrudedEllipse.prototype.draw = function() {
+EllipticalCylinder.prototype.draw = function() {
 	if (this.solid) {
 		this.botCap.draw();
-		this.topCap.draw();
+		mat4.translate(gl.mvMatrix, [0, 0, this.height]);
+			this.topCap.draw();
+		mat4.translate(gl.mvMatrix, [0, 0, -this.height]);
 	}
 	draw(gl.TRIANGLE_STRIP, this);
 };
