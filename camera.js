@@ -39,7 +39,7 @@ Camera.prototype.transform = function(matrix) {
 Camera.prototype.keyboard = function(keys) {
 	if (keys[37]) { // Left cursor key
 		if (this.simple) {
-			this.panAngle -= this.panAmount;
+			this.panAngle += this.panAmount;
 		}
 	}
 	if (keys[38]) { // Up cursor key
@@ -49,7 +49,7 @@ Camera.prototype.keyboard = function(keys) {
 	}
 	if (keys[39]) { // Right cursor key
 		if (this.simple) {
-			this.panAngle += this.panAmount;
+			this.panAngle -= this.panAmount;
 		}
 	}
 	if (keys[40]) { // Down cursor key
