@@ -111,17 +111,22 @@ function Ellipse(rX, rY, res, center) {
 	this.textures = [0.5, 0.5];
 	this.colors = [0,0,0,1];
 	this.indices = [0];
+	var origin = [0,0,0];
 	
 	for (var i=0; i<=res; i++) {
 		var theta = i/res * 2 * Math.PI;
 		var sin = Math.sin(theta);
 		var cos = Math.cos(theta);
 		
-		var c = Math.abs(i/res*2 - 1);
-		//var angle = Math.atan2(center[2], )
-		this.normals.push(cos, sin, 0); // TODO fix normal Z
+		var topR = pointDist(origin, [center[0]*cos, center[1]*sin, 0]);
+		var botR = pointDist(origin, [rX*cos, rY*sin, 0]);
+		var tilt = Math.atan2(center[2], topR - botR);
+		var sinT = Math.sin(tilt);
+		
+		this.normals.push(cos*sinT, sin*sinT, Math.cos(tilt));
 		this.vertices.push(rX*cos, rY*sin, 0);
 		this.textures.push(1-(i/res), 1);
+		var c = Math.abs(i/res*2 - 1);
 		this.colors.push(c,c,0,1);
 		this.indices.push(i+1);
 	}
