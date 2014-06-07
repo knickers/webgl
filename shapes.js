@@ -108,7 +108,7 @@ Axis.prototype.draw = function() {
 function Ellipse(rX, rY, res, center) {
 	this.normals = [0,0,1];
 	this.vertices = center;
-	this.textures = [0.5, 0.5];
+	this.textures = [0.5, 1];
 	this.colors = [0,0,0,1];
 	this.indices = [0];
 	var origin = [0,0,0];
@@ -125,7 +125,7 @@ function Ellipse(rX, rY, res, center) {
 		
 		this.normals.push(cos*sinT, sin*sinT, Math.cos(tilt));
 		this.vertices.push(rX*cos, rY*sin, 0);
-		this.textures.push(1-(i/res), 1);
+		this.textures.push(i/res, 0);
 		var c = Math.abs(i/res*2 - 1);
 		this.colors.push(c,c,0,1);
 		this.indices.push(i+1);
