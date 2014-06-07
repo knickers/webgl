@@ -38,9 +38,10 @@ function Mouse(canvas, animate) {
 
 Mouse.prototype.touchDist = function(touches) {
 	if (touches && touches.length > 1) {
-		var a = touches[0].pageX - touches[1].pageX;
-		var b = touches[0].pageY - touches[1].pageY;
-		return Math.sqrt(a*a + b*b);
+		return pointDist(
+			[touches[0].pageX, touches[0].pageY, 0],
+			[touches[1].pageX, touches[1].pageY, 0]
+		);
 	}
 	return null;
 };
