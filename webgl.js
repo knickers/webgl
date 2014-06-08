@@ -223,9 +223,9 @@ gl.animate = function() {
 };
 
 gl.tick = function() {
-	var update = gl.animate();
-	update = gl.mouse.update() || updated;
-	update = gl.keyboard.update() || updated;
+	var updated = gl.animate();
+	updated = gl.mouse.update() || updated;
+	updated = gl.keyboard.update() || updated;
 	if (updated) {
 		gl.draw();
 	}
