@@ -184,7 +184,7 @@ function EllipticalCylinder(botRX, botRY, topRX, topRY, h, res, solid) {
 EllipticalCylinder.prototype.draw = function() {
 	if (this.solid) {
 		this.botCap.draw();
-		// TODO the top cap incorrectly draws just like the bottom cap
+		// TODO the top cap is incorrectly the same shape as the bottom cap
 		mat4.translate(gl.mvMatrix, [0, 0, this.height]);
 			this.topCap.draw();
 		mat4.translate(gl.mvMatrix, [0, 0, -this.height]);

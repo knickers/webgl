@@ -1,14 +1,7 @@
 function resize() {
 	var html = document.documentElement;
-	var body = document.body;
-	gl.canvas.width = Math.max(
-		body.clientWidth, body.offsetWidth,
-		html.clientWidth, html.offsetWidth
-	);
-	gl.canvas.height = Math.max(
-		body.clientHeight, body.offsetHeight,
-		html.clientHeight, html.offsetHeight
-	);
+	gl.canvas.width = Math.max(html.clientWidth, html.offsetWidth);
+	gl.canvas.height = Math.max(html.clientHeight, html.offsetHeight);
 }
 
 function webGLStart() {
@@ -17,7 +10,6 @@ function webGLStart() {
 	resize();
 	window.addEventListener('resize', function(e) {
 		resize();
-		requestAnimFrame(gl.tick);
 	});
 	
 	var axis = new Axis(10);

@@ -220,6 +220,10 @@ gl.tick = function() {
 	gl.draw();
 };
 
+window.addEventListener('resize', function(e) {
+	requestAnimFrame(gl.tick);
+});
+
 gl.keyboard = new Keyboard(canvas, gl.tick);
 gl.lighting = new Lighting();
 gl.camera = new Camera([30,-30,30], [0,0,0], [0,0,1], true);
