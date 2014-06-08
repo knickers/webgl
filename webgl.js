@@ -217,10 +217,9 @@ gl.animate = function() {
 };
 
 gl.run = function() {
-	var updated = gl.animate();
-	updated = gl.mouse.update() || updated;
+	var updated = gl.mouse.update();
 	updated = gl.keyboard.update() || updated;
-	if (updated) {
+	if (gl.animate() || updated) {
 		gl.draw();
 	}
 	
