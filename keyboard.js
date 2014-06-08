@@ -1,9 +1,9 @@
-function Keyboard(canvas, animate) {
-	this.animate = animate;
+function Keyboard(canvas) {
 	this.pressed = {};
+	this.updateHandlers = [];
 	this.downHandlers = [];
 	this.upHandlers = [];
-	this.handlers = [];
+	this.updated = true;
 	
 	var self = this;
 	/* Not working :-(
@@ -23,7 +23,7 @@ Keyboard.prototype.keyDown = function(event) {
 	}
 	
 	event.stopPropagation();
-	requestAnimFrame(this.animate);
+	this.updated = true;
 };
 
 Keyboard.prototype.keyUp = function(event) {
@@ -34,30 +34,15 @@ Keyboard.prototype.keyUp = function(event) {
 	}
 	
 	event.stopPropagation();
+	this.updated = true;
 };
 
 Keyboard.prototype.update = function() {
-	for (var i=0; i<this.handlers.length; i++) {
-		this.handlers[i](this.pressed);
+	for (var i=0; i<this.updateHandlers.length; i++) {
+		this.updateHandlers[i](this.pressed);
 	}
 	
-	return this.pressed.length > 0;
-};
-
-Keyboard.prototype.addDownHandler = function(handler) {
-	if (handler) {
-		this.downHandlers.push(handler);
-	}
-};
-
-Keyboard.prototype.addUpHandler = function(handler) {
-	if (handler) {
-		this.upHandlers.push(handler);
-	}
-};
-
-Keyboard.prototype.addHandler = function(handler) {
-	if (handler) {
-		this.handlers.push(handler);
-	}
+	var updated = this.updated;
+	this.updated = false;
+	return updated || this.pressed.length > 0;
 };

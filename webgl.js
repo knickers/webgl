@@ -206,40 +206,47 @@ gl.draw = function() {
 
 gl.animate = function() {
 	var now = new Date().getTime();
+	var updated = false;
+	
 	if (gl.lastAnimationTime != 0) {
 		var elapsed = now - gl.lastAnimationTime;
 		
 		for (var i=0; i<gl.animationHandlers.length; i++) {
-			gl.animationHandlers[i](elapsed);
+			if (gl.animationHandlers[i](elapsed)) {
+				updated = true;
+			}
 		}
 	}
+	
 	gl.lastAnimationTime = now;
+	return updated;
 };
 
 gl.tick = function() {
-	//requestAnimFrame(tick);
-	if (gl.animationHandlers.length || gl.keyboard.update()) {
-		requestAnimFrame(gl.tick);
+	var update = gl.animate();
+	update = gl.mouse.update() || updated;
+	update = gl.keyboard.update() || updated;
+	if (updated) {
+		gl.draw();
 	}
 	
-	gl.animate();
-	gl.draw();
+	requestAnimFrame(gl.tick);
 };
 
 window.addEventListener('resize', function(e) {
 	requestAnimFrame(gl.tick);
 });
 
-gl.keyboard = new Keyboard(canvas, gl.tick);
+gl.keyboard = new Keyboard(canvas);
 gl.lighting = new Lighting();
 gl.camera = new Camera([30,-30,30], [0,0,0], [0,0,1], true);
-gl.mouse = new Mouse(canvas, gl.tick);
+gl.mouse = new Mouse(canvas);
 
 gl.initShaders();
 
-gl.keyboard.addDownHandler(function(keys) { gl.camera.keyboard(keys);});
-gl.mouse.addMoveHandler(function(delta) { gl.camera.mouse(delta); });
-gl.mouse.addWheelHandler(function(delta) { gl.camera.mouse(delta); });
+gl.keyboard.downHandlers.push(function(keys) { gl.camera.keyboard(keys);});
+gl.mouse.moveHandlers.push(function(delta) { gl.camera.mouse(delta); });
+gl.mouse.wheelHandlers.push(function(delta) { gl.camera.mouse(delta); });
 
 gl.clearColor(0.8, 0.8, 0.8, 1.0);
 gl.enable(gl.DEPTH_TEST);

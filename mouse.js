@@ -1,5 +1,4 @@
-function Mouse(canvas, animate) {
-	this.animate = animate;
+function Mouse(canvas) {
 	this.x = null;
 	this.y = null;
 	this.dist = null;
@@ -8,6 +7,7 @@ function Mouse(canvas, animate) {
 	this.upHandlers = [];
 	this.moveHandlers = [];
 	this.wheelHandlers = [];
+	this.updated = true;
 	
 	var self = this;
 	// Standard mouse inputs
@@ -66,7 +66,7 @@ Mouse.prototype.buttonDown = function(event) {
 		this.downHandlers[i]({x: this.x, y: this.y});
 	}
 	
-	requestAnimFrame(this.animate);
+	this.updated = true;
 };
 
 Mouse.prototype.buttonUp = function(event) {
@@ -88,7 +88,7 @@ Mouse.prototype.buttonUp = function(event) {
 		this.upHandlers[i]();
 	}
 	
-	requestAnimFrame(this.animate);
+	this.updated = true;
 };
 
 Mouse.prototype.move = function(event) {
@@ -120,7 +120,7 @@ Mouse.prototype.move = function(event) {
 		this.moveHandlers[i](delta);
 	}
 	
-	requestAnimFrame(this.animate);
+	this.updated = true;
 };
 
 Mouse.prototype.wheel = function(event) {
@@ -143,30 +143,11 @@ Mouse.prototype.wheel = function(event) {
 		this.wheelHandlers[i](delta);
 	}
 	
-	requestAnimFrame(this.animate);
+	this.updated = true;
 };
 
-Mouse.prototype.addDownHandler = function(handler) {
-	if (handler) {
-		this.downHandlers.push(handler);
-	}
+Mouse.prototype.update = function() {
+	var updated = this.updated;
+	this.updated = false;
+	return updated;
 };
-
-Mouse.prototype.addUpHandler = function(handler) {
-	if (handler) {
-		this.upHandlers.push(handler);
-	}
-};
-
-Mouse.prototype.addMoveHandler = function(handler) {
-	if (handler) {
-		this.moveHandlers.push(handler);
-	}
-};
-
-Mouse.prototype.addWheelHandler = function(handler) {
-	if (handler) {
-		this.wheelHandlers.push(handler);
-	}
-};
-
