@@ -46,6 +46,5 @@ function webGLStart() {
 		gl.rotate(-angle, [0, 0, 1]);
 	});
 	
-	gl.tick();
-	setTimeout(gl.tick, 250);
+	gl.run();
 }

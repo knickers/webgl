@@ -222,7 +222,7 @@ gl.animate = function() {
 	return updated;
 };
 
-gl.tick = function() {
+gl.run = function() {
 	var updated = gl.animate();
 	updated = gl.mouse.update() || updated;
 	updated = gl.keyboard.update() || updated;
@@ -230,11 +230,11 @@ gl.tick = function() {
 		gl.draw();
 	}
 	
-	requestAnimFrame(gl.tick);
+	requestAnimFrame(gl.run);
 };
 
 window.addEventListener('resize', function(e) {
-	requestAnimFrame(gl.tick);
+	requestAnimFrame(gl.run);
 });
 
 gl.keyboard = new Keyboard(canvas);
