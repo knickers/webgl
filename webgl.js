@@ -1,13 +1,7 @@
 var gl;
 
 function initGL(canvas) {
-try {
-	gl = canvas.getContext('experimental-webgl');
-} catch (e) {
-}
-if (!gl) {
-	alert('Could not initialise WebGL, sorry :-(');
-}
+gl = WebGLUtils.setupWebGL(canvas);
 
 gl.mvMatrixStack = [];
 gl.mvMatrix = mat4.create();
