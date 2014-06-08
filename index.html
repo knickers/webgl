@@ -102,6 +102,13 @@ void main(void) {
 <body onload="webGLStart();">
 	<canvas id="canvas" width="500" height="500"></canvas>
 	<div class="texture">
+		<div>Rotate: <input id="rotate" type="checkbox"/></div>
+		<div>Shape:</div>
+		<select id="shape">
+			<option value="none">None</option>
+			<option value="sphere">Sphere</option>
+			<option selected value="cylinder">Cylinder</option>
+		</select>
 		<div>Texture:</div>
 		<select id="texture">
 			<option value="none">None</option>
