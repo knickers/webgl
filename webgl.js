@@ -154,11 +154,13 @@ gl.samplerUniform = function(num) {
 };
 gl.useTextures = function(ok) {
 	gl.uniform1i(gl.shaderProgram.useTexturesUniform, ok);
+	return ok;
 };
 gl.setTexture = function(texture) {
-	gl.useTextures(!!texture);
-	gl.activeTexture(gl.TEXTURE0);
-	gl.bindTexture(gl.TEXTURE_2D, texture);
+	if (gl.useTextures(!!texture)) {
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_2D, texture);
+	}
 };
 gl.translate = function(vector) {
 	mat4.translate(gl.mvMatrix, vector);
@@ -206,9 +208,7 @@ gl.animate = function() {
 		var elapsed = now - gl.lastAnimationTime;
 		
 		for (var i=0; i<gl.animationHandlers.length; i++) {
-			if (gl.animationHandlers[i](elapsed)) {
-				updated = true;
-			}
+			updated = gl.animationHandlers[i](elapsed) || updated;
 		}
 	}
 	

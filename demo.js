@@ -7,8 +7,8 @@ function resize() {
 function webGLStart() {
 	initGL(document.getElementById('canvas'));
 	
-	resize();
 	window.addEventListener('resize', resize);
+	resize();
 	
 	var axis = new Axis(10);
 	var angle = dtor(-180);
@@ -33,7 +33,7 @@ function webGLStart() {
 	});
 	
 	gl.drawHandlers.push(function() {
-		gl.useTextures(false);
+		gl.setTexture(null);
 		gl.materialShininess(0.0);
 		axis.draw();
 		
