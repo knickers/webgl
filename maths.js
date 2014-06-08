@@ -1,3 +1,7 @@
+/******************************************************************************/
+/**************************** Math Helper Functions ***************************/
+/******************************************************************************/
+
 function dtor(degrees) { return degrees * Math.PI / 180; }
 function rtod(radians) { return radians / Math.PI * 180; }
 
@@ -31,4 +35,31 @@ function pointDist(p1, p2) {
 		c = p1.z - p2.z;
 	}
 	return Math.sqrt(a*a + b*b + c*c);
+}
+
+/******************************************************************************/
+/************************** General Helper Functions **************************/
+/******************************************************************************/
+
+// Returns a new object with the merged obj1 and obj2 values
+// Favors obj2's values over obj1's
+function merge(obj1, obj2) {
+	var obj = {};
+	for (var key in obj1) { obj[key] = obj1[key]; }
+	for (var key in obj2) { obj[key] = obj2[key]; }
+	return obj;
+}
+
+// Overwrites obj1's values with obj2's
+function extend(obj1, obj2) {
+	for (var key in obj2) { obj1[key] = obj2[key]; }
+}
+
+// Returns the first argument that is defined
+function or() {
+	for (var i=0; i<arguments.length; i++) {
+		if (typeof(arguments[i]) !== 'undefined') {
+			return arguments[i];
+		}
+	}
 }
