@@ -109,7 +109,7 @@ function Ellipse(rX, rY, res, center) {
 	this.normals = [0,0,1];
 	this.vertices = center;
 	this.textures = [0.5, 0.5];
-	this.colors = [0,0,0,1];
+	this.colors = [1,1,1,1];
 	this.indices = [0];
 	var origin = [0,0,0];
 	
@@ -126,8 +126,7 @@ function Ellipse(rX, rY, res, center) {
 		this.normals.push(cos*sinT, sin*sinT, Math.cos(tilt));
 		this.vertices.push(rX*cos, rY*sin, 0);
 		this.textures.push(cos/2 + 0.5, sin/2 + 0.5);
-		var c = Math.abs(i/res*2 - 1);
-		this.colors.push(c,c,0,1);
+		this.colors.push(1,1,1,1);
 		this.indices.push(i+1);
 	}
 	
@@ -174,7 +173,7 @@ function EllipticalCylinder(botRX, botRY, topRX, topRY, h, res, solid) {
 			this.normals.push(cos*sinT, sin*sinT, Math.cos(tilt));
 			this.vertices.push(x*cos, y*sin, j*h);
 			this.textures.push(i/res, j);
-			this.colors.push(0,0,0,1);
+			this.colors.push(1,1,1,1);
 			this.indices.push(i*2 + j);
 		}
 	}
