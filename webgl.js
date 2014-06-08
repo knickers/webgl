@@ -166,6 +166,12 @@ gl.setTexture = function(texture) {
 	gl.activeTexture(gl.TEXTURE0);
 	gl.bindTexture(gl.TEXTURE_2D, texture);
 };
+gl.translate = function(vector) {
+	mat4.translate(gl.mvMatrix, vector);
+};
+gl.rotate = function(radians, axis) {
+	mat4.rotate(gl.mvMatrix, radians, axis);
+};
 
 gl.draw = function() {
 	gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);

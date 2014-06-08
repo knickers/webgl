@@ -8,9 +8,7 @@ function webGLStart() {
 	initGL(document.getElementById('canvas'));
 	
 	resize();
-	window.addEventListener('resize', function(e) {
-		resize();
-	});
+	window.addEventListener('resize', resize);
 	
 	var axis = new Axis(10);
 	var sphere = new Sphere(5, 36, 36);
@@ -32,9 +30,9 @@ function webGLStart() {
 		
 		gl.setTexture(textures[document.getElementById('texture').value]);
 		gl.materialShininess(32.0);
-		mat4.rotate(gl.mvMatrix, earthAngle, [0, 0, 1]);
+		gl.rotate(earthAngle, [0, 0, 1]);
 			sphere.draw();
-		mat4.rotate(gl.mvMatrix, -earthAngle, [0, 0, 1]);
+		gl.rotate(-earthAngle, [0, 0, 1]);
 	});
 	
 	gl.tick();

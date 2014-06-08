@@ -185,9 +185,9 @@ EllipticalCylinder.prototype.draw = function() {
 	if (this.solid) {
 		this.botCap.draw();
 		// TODO the top cap is incorrectly the same shape as the bottom cap
-		mat4.translate(gl.mvMatrix, [0, 0, this.height]);
+		gl.translate([0, 0, this.height]);
 			this.topCap.draw();
-		mat4.translate(gl.mvMatrix, [0, 0, -this.height]);
+		gl.translate([0, 0, -this.height]);
 	}
 	draw(gl.TRIANGLE_STRIP, this);
 };
