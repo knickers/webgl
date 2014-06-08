@@ -1,7 +1,7 @@
 function resize() {
-	var html = document.documentElement;
-	gl.canvas.width = Math.max(html.clientWidth, html.offsetWidth);
-	gl.canvas.height = Math.max(html.clientHeight, html.offsetHeight);
+	var body = document.body;
+	gl.canvas.width = Math.max(body.clientWidth, body.offsetWidth);
+	gl.canvas.height = Math.max(body.clientHeight, body.offsetHeight);
 }
 
 function webGLStart() {
