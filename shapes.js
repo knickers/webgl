@@ -173,7 +173,7 @@ function EllipticalCylinder(botRX, botRY, topRX, topRY, h, res, solid) {
 			var y = j ? topRY : botRY;
 			this.normals.push(cos*sinT, sin*sinT, Math.cos(tilt));
 			this.vertices.push(x*cos, y*sin, j*h);
-			this.textures.push(1-(i/res), j);
+			this.textures.push(i/res, j);
 			this.colors.push(0,0,0,1);
 			this.indices.push(i*2 + j);
 		}
@@ -184,6 +184,7 @@ function EllipticalCylinder(botRX, botRY, topRX, topRY, h, res, solid) {
 EllipticalCylinder.prototype.draw = function() {
 	if (this.solid) {
 		this.botCap.draw();
+		// TODO the top cap incorrectly draws just like the bottom cap
 		mat4.translate(gl.mvMatrix, [0, 0, this.height]);
 			this.topCap.draw();
 		mat4.translate(gl.mvMatrix, [0, 0, -this.height]);
@@ -191,8 +192,8 @@ EllipticalCylinder.prototype.draw = function() {
 	draw(gl.TRIANGLE_STRIP, this);
 };
 
-function Cylinder(r, res) {
-	this.__proto__ = new Ellipse(r, r, res, [0,0,0]);
+function Cylinder(r, h, res, solid) {
+	this.__proto__ = new EllipticalCylinder(r, r, r, r, h, res, solid);
 }
 
 function Sphere(r, lats, lngs) {
